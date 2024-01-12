@@ -1,26 +1,10 @@
-import processing.video.*;
+String data_directory = "/data";
 
-Capture video;
+String classification_type = "Folder";
 
+int epochs = 5;
 
-void setup() {
-  size(700, 700);
-  video = new Capture(this, 320, 240);
-  video.start();
-}
+String activation_function = "Sigmoid";
 
-void captureEvent(Capture video) {
-  video.read();
-}
-
-void draw() {
-  background(45);
-  PFont times = createFont("Georgia", 23);
-  
-  textSize(36);
-  textFont(times);
-  text("Live Feed:", 440, 30);
-  
-  imageMode(CENTER);
-  image(video, 490, 170, video.width, video.height);
-}
+String loss_function = "Mean_Squared";
+float alpha = 0.5;
