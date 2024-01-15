@@ -13,17 +13,24 @@ class Neuron {
   float bias;
   float del_bias;
   
-  float activaiton;
+  float activation_sum;
+  
+  float activation;
   
   Neuron(float b){
     this.bias = b;
-    this.activaiton = 0;
+    this.activation = 0;
     this.del_bias = 0;
+    this.activation_sum = 0;
   }
   
   void update_neuron(){
     this.bias += del_bias;
     this.del_bias = 0;
+  }
+  
+  void calc_activation(){
+    this.activation = sigmoid( this. );
   }
 
 }
@@ -63,7 +70,6 @@ class Layer{
   }
   
   void update_layer(){
-    
     for(Neuron n: neurons){
       n.update_neuron();
     }
@@ -71,7 +77,16 @@ class Layer{
     for(Connection c: connections){
       c.update_connection();
     }
+  }
   
+  void calc_activations(){
+    for(Connection c: connections){
+      c.b.activation_sum += c.a.activation;
+    }
+    for(Connection c: connections){
+      c.b.calc_activation();
+    }
+    
   }
 }
 
@@ -89,8 +104,26 @@ class Network{
     }
   }
   
+  void feed_forward(float[] input){
+  
+    for(int l = 1; l < this.layers.length; l++){
+      this.layers[l].calc_activations();
+    }
+    
+  }
+  
   void train(float[][] input, int epochs, int batch_size, float alpha){
   
+    //Set the neurons of the first layer to inputs
+    int n_index = 0;
+    
+    for(float[] set: input){
+      for(float f: set){
+        this.layers[0].neurons[n_index].activation = f;
+        n_index += 1;
+      }
+    }
+    
     int set_size = ceil((input.length)/batch_size);
     
     for(int e = 0; e < epochs; e++){
