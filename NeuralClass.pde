@@ -1,8 +1,9 @@
 String data_directory = "/data";
 
-String classification_type = "Folder";
+String classification_type = "Name";
 
 int epochs = 5;
+int batch_size = 4;
 
 String activation_function = "Sigmoid";
 
