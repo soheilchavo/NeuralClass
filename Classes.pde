@@ -69,6 +69,26 @@ class Layer{
     this.connections = c;
   }
   
+  void initialize_layer(int n, Layer prev_layer){
+    
+    this.neurons = new Neuron[n];
+    
+    for(int i = 0; i < n; i++){
+      this.neurons[i] = new Neuron(random(1));
+    }
+    
+    this.connections = new Connection[n*prev_layer.neurons.length];
+    
+    for(int n_0 = 0; n_0 < n; n_0++){
+      
+      for(int n_1 = 0; n_1 < prev_layer.neurons.length; n_1++){
+        this.connections[n_0*prev_layer.neurons.length + n_1] = new Connection(prev_layer.neurons[n_1], this.neurons[n_0], random(1));
+      }
+      
+    }
+    
+  }
+  
   void update_layer(){
     for(Neuron n: neurons){
       n.update_neuron();
@@ -93,8 +113,20 @@ class Network{
   
   Layer[] layers;
   
-  Network(Layer[] l){
-    this.layers = l;
+  Network(int input_size, int output_size, int hidden_layers, int neurons_per_layer){
+    
+    this.layers = new Layer[2 + hidden_layers];
+    
+    //Make Input Layer
+    layers[0].initialize_layer(input_size, null);
+    
+    //Make Hidden Layers
+    for(int i = 1; i <= hidden_layers; i++){
+      layers[i].initialize_layer(neurons_per_layer, layers[i-1]);
+    }
+    
+    //Make Output Layer
+    layers[layers.length-1].initialize_layer(output_size, layers[layers.length-2]);
   } 
   
   void update_network(){
