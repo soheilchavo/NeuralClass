@@ -9,3 +9,7 @@ String activation_function = "Sigmoid";
 
 String loss_function = "Mean_Squared";
 float alpha = 0.5;
+
+void draw(){
+  
+}
