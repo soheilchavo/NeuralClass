@@ -4,8 +4,12 @@ float sigmoid(float x){
   return 1/(1+pow(e, -x));
 }
 
+float inv_tan(float x){
+  return 1/tan(x);
+}
+
 float sigmoid_prime(float x){
-  return -1/(1+2*(pow(e,-x)+pow(e, -2*x)));
+  return sigmoid(1-sigmoid(x));
 }
 
 class Neuron {
@@ -17,9 +21,12 @@ class Neuron {
   
   float activation;
   
+  float x;
+  float y;
+  
   Neuron(float b){
     this.bias = b;
-    this.activation = 0;
+    this.activation = random(1);
     this.del_bias = 0;
     this.activation_sum = 0;
   }
@@ -64,12 +71,9 @@ class Layer{
   Neuron[] neurons;
   Connection[] connections;
   
-  Layer(Neuron[] n, Connection[] c){
-    this.neurons = n;
-    this.connections = c;
-  }
+  boolean animation_view = false;
   
-  void initialize_layer(int n, Layer prev_layer){
+  Layer(int n, Layer prev_layer){
     
     this.neurons = new Neuron[n];
     
@@ -77,14 +81,16 @@ class Layer{
       this.neurons[i] = new Neuron(random(1));
     }
     
-    this.connections = new Connection[n*prev_layer.neurons.length];
-    
-    for(int n_0 = 0; n_0 < n; n_0++){
+    if(prev_layer != null){
+      this.connections = new Connection[n*prev_layer.neurons.length];
       
-      for(int n_1 = 0; n_1 < prev_layer.neurons.length; n_1++){
-        this.connections[n_0*prev_layer.neurons.length + n_1] = new Connection(prev_layer.neurons[n_1], this.neurons[n_0], random(1));
+      for(int n_0 = 0; n_0 < n; n_0++){
+        
+        for(int n_1 = 0; n_1 < prev_layer.neurons.length; n_1++){
+          this.connections[n_0*prev_layer.neurons.length + n_1] = new Connection(prev_layer.neurons[n_1], this.neurons[n_0], random(-1,1));
+        }
+        
       }
-      
     }
     
   }
@@ -116,17 +122,16 @@ class Network{
   Network(int input_size, int output_size, int hidden_layers, int neurons_per_layer){
     
     this.layers = new Layer[2 + hidden_layers];
-    
     //Make Input Layer
-    layers[0].initialize_layer(input_size, null);
+    layers[0] = new Layer(input_size, null);
     
     //Make Hidden Layers
     for(int i = 1; i <= hidden_layers; i++){
-      layers[i].initialize_layer(neurons_per_layer, layers[i-1]);
+      layers[i] = new Layer(neurons_per_layer, layers[i-1]);
     }
     
     //Make Output Layer
-    layers[layers.length-1].initialize_layer(output_size, layers[layers.length-2]);
+    layers[layers.length-1] = new Layer(output_size, layers[layers.length-2]);
   } 
   
   void update_network(){
@@ -144,13 +149,16 @@ class Network{
   
     //Consecutivley itterate through layers and calculate activations
     for(int l = 1; l < this.layers.length; l++){
+      this.layers[l].animation_view = true;
       this.layers[l].calc_activations();
+      delay(animation_buffer);
+      this.layers[l].animation_view = false;
     }
     
   }
   
   void back_prop(float alpha){
-  
+    print(alpha);
   }
   
   void train(float[][] input, int epochs, int batch_size, float alpha){
