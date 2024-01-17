@@ -85,6 +85,8 @@ void drawNeuralNetwork(){
     }
   }
   
-  
-  
+}
+
+void keyPressed(){
+  network.feed_forward(new float[] {0, 1, 2, 45, -4});
 }

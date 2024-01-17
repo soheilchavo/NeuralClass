@@ -151,7 +151,6 @@ class Network{
     for(int l = 1; l < this.layers.length; l++){
       this.layers[l].animation_view = true;
       this.layers[l].calc_activations();
-      delay(animation_buffer);
       this.layers[l].animation_view = false;
     }
     
