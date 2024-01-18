@@ -1,92 +1,137 @@
+//Network Hyperparameters
+int epochs = 5; //Number of cycles ran on the training data
+int batch_size = 4; //Batch size for training with stochastic gradient descent
+float alpha = 0.5; //Learning step taken in backpropogation
+
+String activation_function = "Sigmoid"; //Normalization function for neuron activation, choose from Sigmoid, inverse tan, and relu
+String loss_function = "Quadratic"; //Cost function for backpropogation 
+
+int hidden_layers = 9; //Number of layers between the input and output layers
+int neurons_per_layer = 13; //Number of neurons in hidden layers
+
+int input_size = 4; //Loaded from dataset, (ex. grayscale image would have 1920*1080 input neurons)
+int output_size = 2; //Number of classifications of data
+
+//Data Collection
 String data_directory = "/data";
+String classification_type = "Name"; //By Name of file or by which Folder data is in
 
-String classification_type = "Name";
+//Network visual parameters
+float[] background_col = new float[] {8, 8, 8};
 
-int epochs = 5;
-int batch_size = 4;
+color weight_negative_colour = color(255, 55, 87);
+color weight_positive_colour = color(55, 55, 244);
 
-String activation_function = "Sigmoid";
+float[] neuron_colour_weight = new float[] {40, 40, 230};
+float neuron_bright_offset = 90;
 
-String loss_function = "Mean_Squared";
-float alpha = 0.5;
-
-int neurons_per_layer = 5;
-int hidden_layers = 4;
+color activation_text_colour = color(0, 0, 0);
 
 float neuron_size = 35;
 float connection_width = 2.4;
-float layer_padding = 120;
-float neuron_padding = 50;
 
+float layer_padding = 244;
+float neuron_padding = 80;
+
+//Coords of the network on screen
 float network_x = 0;
 float network_y = 300;
 
-Network network = null;
+int animation_buffer = 100; //Miliseconds of delay between each step of the visualization
 
-int animation_buffer = 100;
+//Camera Controls
+float zoom = 1;
+float x_offset = 0;
+float y_offset = 0;
+
+float shift_sensitivity = 10; //How sensitive WASD keys are
+float zoom_sensitivity = 0.04; //How sensitive zoom is
+float mouse_sensitivity = 1.4; //How sensitive dragging is
+
+Network network = null; //Main Network for the program
 
 void setup(){
   size(800, 700);
-  network = new Network(5, 3, hidden_layers, neurons_per_layer);
+  network = new Network(input_size, output_size, hidden_layers, neurons_per_layer);
 }
 
 void draw(){
-  background(35,35,35);
+  
+  //Draw Background
+  background(background_col[0], background_col[1], background_col[2]);
+  
+  //Translate screen for camera controls
+  pushMatrix();
+  
+  translate(width/2, height/2);   //Center Zooming
+  scale(zoom);                    //Center Zooming
+  translate(-width/2, -height/2); //Center Zooming
+  translate(x_offset, y_offset);  //X and Y offsets
+  
   drawNeuralNetwork();
+  
+  //Undo screen transformations
+  popMatrix();
 }
 
 void drawNeuralNetwork(){
   
+  //Base x value for leftmost layer
   float curr_x = network_x;
   
-  strokeWeight(connection_width);
   
+  //Draw the connections and calculate neuron positions on screen
   for(Layer l: network.layers){
-    curr_x += layer_padding;
+    
+    //Set base y for layer depending on how many neurons there are (centers the layer)
     float curr_y = network_y - l.neurons.length*(neuron_padding)/2;
     
+    //Calculate the position of the neurons (but don't draw them yet since we want them to be on top)
     for(Neuron n: l.neurons){
-      curr_y += neuron_padding;
       n.x = curr_x;
       n.y = curr_y;
+      curr_y += neuron_padding;
     }
     
+    //Draw the connections
     if(l.connections != null){
       for(Connection c: l.connections){
         
-        float[] col = new float[] {c.weight*255*-1 + 100, 0, 0};
-        if(c.weight > 0) { col = new float[] {0,0,c.weight*255  + 100}; }
+        //Use positive or negative weight colour
+        color col = weight_negative_colour;
+        if(c.weight > 0) { col = weight_positive_colour; }
         
-        stroke(col[0],col[1],col[2]); 
+        //Set width for connection
+        strokeWeight(connection_width*abs(c.weight/2));
+        //Draw the connection
+        stroke(col); 
         line(c.a.x, c.a.y, c.b.x, c.b.y);
       }
     }
+    
+    //Add layer padding
+    curr_x += layer_padding;
   }
   
+  //Draw the Neurons
   for(Layer l: network.layers){
-    
-    stroke(188,188,188);
-    if(l.animation_view){
-      stroke(255,0,0);
-    }
-    
     for(Neuron n: l.neurons){
-      fill(0, 0, n.activation * 90 + 150);
+      //Draw Nueron
+      fill(n.activation*neuron_colour_weight[0]+neuron_bright_offset, n.activation*neuron_colour_weight[1]+neuron_bright_offset, n.activation*neuron_colour_weight[2]+neuron_bright_offset);
       circle(n.x, n.y, neuron_size);
-      fill(255,255,255);
-      textAlign(CENTER);
       
-      String activation_text = str(n.activation);
-      if(activation_text.length() >= 4){
+      //Draw activation text
+      String activation_text = str(n.activation); //Convert activation to string
+      
+      if(activation_text.length() >= 4){ //Cut off all the decimals
         activation_text = str(n.activation).substring(0,4);
       }
       
-      text(activation_text, n.x, n.y);
+      fill(activation_text_colour);
+      textAlign(CENTER);
+      textSize(neuron_size*0.3); //Set text size based on neuron size
+      text(activation_text, n.x, n.y); //Draw Activation Text
     }
   }
   
-}
-
-void keyPressed(){
-  network.feed_forward(new float[] {0, 1, 2, 45, -4});
 }
