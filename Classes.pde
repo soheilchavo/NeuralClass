@@ -18,8 +18,8 @@ class Neuron {
     this.activation_sum = 0;
   }
   
-  void update_neuron(){
-    this.bias += del_bias;
+  void update_neuron(float alpha){
+    this.bias += del_bias*alpha;
     this.del_bias = 0;
   }
   
@@ -46,8 +46,8 @@ class Connection{
     this.b = two;
   }
   
-  void update_connection(){
-    this.weight += del_weight;
+  void update_connection(float alpha){
+    this.weight += del_weight*alpha;
     this.del_weight = 0;
   }
   
@@ -79,12 +79,12 @@ class Layer{
     
   }
   
-  void update_layer(){
+  void update_layer(float alpha){
     for(Connection c: connections){
-      c.update_connection();
+      c.update_connection(alpha);
     }
     for(Neuron n: neurons){
-      n.update_neuron();
+      n.update_neuron(alpha);
     }
   }
   
@@ -119,9 +119,9 @@ class Network{
     layers[layers.length-1] = new Layer(output_size, layers[layers.length-2]);
   } 
   
-  void update_network(){
+  void update_network(float alpha){
     for(Layer l: this.layers){
-      l.update_layer();
+      l.update_layer(alpha);
     }
   }
 }

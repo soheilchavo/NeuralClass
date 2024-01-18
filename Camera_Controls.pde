@@ -44,5 +44,6 @@ void keyPressed() {
   //TAKE OUT
   if (key == 'f')
     feed_forward(network, new float[] {0, 1, 45, 4});
+    //backprop(network, new float[] {1, 0, 0, 0});
   
 }  

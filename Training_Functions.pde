@@ -12,28 +12,48 @@ void feed_forward(Network n, float[] set){
   
 }
   
-void backprop(Network n, float alpha){
-  print(n, alpha);
+void backprop(Network n, float[] correct_output){
+  
+  //Find Cost for every neuron in output layer
+  int output_size = correct_output.length;
+  
+  for(int i = 0; i < output_size; i++){
+    
+    float cost = quadratic_cost(n.layers[n.layers.length-1].neurons[i].activation, correct_output[i]);
+    
+    for(int l = n.layers.length-1; l > 0; l--){
+      
+      //Calculate derrivative of weights
+      for(Connection c: n.layers[l].connections){
+      
+      }
+      
+      //Calculate derrivative of biases
+      for(Neuron neuron: n.layers[l].neurons){
+      
+      }
+      
+    }
+  }
+  
 }
 
-void train(Network n, float[][] input, int epochs, int batch_size, float alpha){
+void train(Network n, float[][] input, float[][] output, int epochs, int batch_size, float alpha){
 
   int set_size = ceil((input.length)/batch_size);
   
   for(int e = 0; e < epochs; e++){
     
-    int i = 0;
+    //Shuffle data
     
-    for(float[] set: input){
+    for(int i = 0; i < input.length; i++){
       
-      feed_forward(n, set);
-      backprop(n, alpha);
+      feed_forward(n, input[i]);
+      backprop(n, output[i]);
       
       if(i % set_size == 0){
-        n.update_network();
+        n.update_network(alpha);
       }
-      
-      i += 1;
     }
   }
 }
