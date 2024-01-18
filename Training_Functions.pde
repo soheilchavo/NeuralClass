@@ -21,19 +21,6 @@ void backprop(Network n, float[] correct_output){
     
     float cost = quadratic_cost(n.layers[n.layers.length-1].neurons[i].activation, correct_output[i]);
     
-    for(int l = n.layers.length-1; l > 0; l--){
-      
-      //Calculate derrivative of weights
-      for(Connection c: n.layers[l].connections){
-      
-      }
-      
-      //Calculate derrivative of biases
-      for(Neuron neuron: n.layers[l].neurons){
-      
-      }
-      
-    }
   }
   
 }
