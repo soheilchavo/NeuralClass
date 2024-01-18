@@ -6,8 +6,8 @@ float alpha = 0.5; //Learning step taken in backpropogation
 String activation_function = "Sigmoid"; //Normalization function for neuron activation, choose from Sigmoid, inverse tan, and relu
 String loss_function = "Quadratic"; //Cost function for backpropogation 
 
-int hidden_layers = 9; //Number of layers between the input and output layers
-int neurons_per_layer = 13; //Number of neurons in hidden layers
+int hidden_layers = 3; //Number of layers between the input and output layers
+int neurons_per_layer = 12; //Number of neurons in hidden layers
 
 int input_size = 4; //Loaded from dataset, (ex. grayscale image would have 1920*1080 input neurons)
 int output_size = 2; //Number of classifications of data
@@ -51,7 +51,7 @@ float mouse_sensitivity = 1.4; //How sensitive dragging is
 Network network = null; //Main Network for the program
 
 void setup(){
-  size(800, 700);
+  size(500, 500);
   network = new Network(input_size, output_size, hidden_layers, neurons_per_layer);
 }
 

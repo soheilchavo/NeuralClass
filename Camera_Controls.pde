@@ -43,6 +43,6 @@ void keyPressed() {
     
   //TAKE OUT
   if (key == 'f')
-    network.feed_forward(new float[] {0, 1, 45, 4});
+    feed_forward(network, new float[] {0, 1, 45, 4});
   
 }  
