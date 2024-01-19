@@ -5,6 +5,8 @@ int epochs = 5; //Number of cycles ran on the training data
 int batch_size = 4; //Batch size for training with stochastic gradient descent
 float alpha = 0.5; //Learning step taken in backpropogation
 
+boolean randomize_weight_and_biases = true; //Randomizes w/b on network initialization
+
 String activation = "Sigmoid"; //Normalization function for neuron activation, choose from Sigmoid, inverse tan, and relu
 String loss = "Quadratic"; //Cost function for backpropogation 
 
@@ -17,6 +19,7 @@ int output_size = 2; //Number of classifications of data
 //Data Collection
 String data_directory = "/data";
 String classification_type = "Name"; //By Name of file or by which Folder data is in
+String network_name = "MyNeuralNetwork"; //Name for saving and loading
 
 //Network visual parameters
 float[] background_col = new float[] {8, 8, 8};
@@ -56,7 +59,7 @@ void setup(){
   size(500, 500);
   createGUI();
   frameRate(18);
-  network = new Network(input_size, output_size, hidden_layers, neurons_per_layer);
+  generate_network();
 }
 
 void draw(){
@@ -79,7 +82,7 @@ void draw(){
 }
 
 void drawNeuralNetwork(){
-  
+  println(network.layers.length);
   //Base x value for leftmost layer
   float curr_x = network_x;
   
