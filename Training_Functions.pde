@@ -2,7 +2,7 @@ void feed_forward(Network n, float[] set){
   
   //Set first layer neurons to the input data (Note, input must match the number of neurons in input layer)
   for(int index = 0; index < set.length; index++){
-    n.layers[0].neurons[index].activation = sigmoid(set[index]);
+    n.layers[0].neurons[index].activation = activation_function(set[index]);
   }
 
   //Consecutivley itterate through layers and calculate activations

@@ -27,7 +27,7 @@ class Neuron {
   }
   
   void calculate_activation(){
-    this.activation = sigmoid(this.activation_sum+this.bias);
+    this.activation = activation_function(this.activation_sum+this.bias);
     this.activation_sum = 0;
   }
 

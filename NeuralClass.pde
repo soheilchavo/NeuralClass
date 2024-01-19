@@ -1,15 +1,17 @@
+import g4p_controls.*;
+
 //Network Hyperparameters
 int epochs = 5; //Number of cycles ran on the training data
 int batch_size = 4; //Batch size for training with stochastic gradient descent
 float alpha = 0.5; //Learning step taken in backpropogation
 
-String activation_function = "Sigmoid"; //Normalization function for neuron activation, choose from Sigmoid, inverse tan, and relu
-String loss_function = "Quadratic"; //Cost function for backpropogation 
+String activation = "Sigmoid"; //Normalization function for neuron activation, choose from Sigmoid, inverse tan, and relu
+String loss = "Quadratic"; //Cost function for backpropogation 
 
-int hidden_layers = 5; //Number of layers between the input and output layers
-int neurons_per_layer = 9; //Number of neurons in hidden layers
+int hidden_layers = 4; //Number of layers between the input and output layers
+int neurons_per_layer = 14; //Number of neurons in hidden layers
 
-int input_size = 4; //Loaded from dataset, (ex. grayscale image would have 1920*1080 input neurons)
+int input_size = 9; //Loaded from dataset, (ex. grayscale image would have 1920*1080 input neurons)
 int output_size = 2; //Number of classifications of data
 
 //Data Collection
@@ -27,7 +29,7 @@ float neuron_bright_offset = 90;
 
 color activation_text_colour = color(0, 0, 0);
 
-float neuron_size = 42;
+float neuron_size = 35;
 float connection_width = 2.9;
 
 float layer_padding = 250;
@@ -52,6 +54,7 @@ Network network = null; //Main Network for the program
 
 void setup(){
   size(500, 500);
+  createGUI();
   frameRate(18);
   network = new Network(input_size, output_size, hidden_layers, neurons_per_layer);
 }
