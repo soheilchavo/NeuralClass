@@ -22,12 +22,12 @@ String classification_type = "Name"; //By Name of file or by which Folder data i
 String network_name = "MyNeuralNetwork"; //Name for saving and loading
 
 //Network visual parameters
-float[] background_col = new float[] {8, 8, 8};
+float[] background_col = new float[] {8, 8, 13};
 
 color weight_negative_colour = color(255, 55, 87);
 color weight_positive_colour = color(55, 55, 244);
 
-float[] neuron_colour_weight = new float[] {40, 40, 230};
+float[] neuron_colour_weight = new float[] {40, 20, 240};
 float neuron_bright_offset = 90;
 
 color activation_text_colour = color(0, 0, 0);
@@ -45,9 +45,9 @@ float network_y = 300;
 int animation_buffer = 100; //Miliseconds of delay between each step of the visualization
 
 //Camera Controls
-float zoom = 1;
-float x_offset = 0;
-float y_offset = 0;
+float zoom = 1.00;
+float x_offset = 0.00;
+float y_offset = 0.00;
 
 float shift_sensitivity = 10; //How sensitive WASD keys are
 float zoom_sensitivity = 0.04; //How sensitive zoom is
@@ -79,10 +79,19 @@ void draw(){
   
   //Undo screen transformations
   popMatrix();
+
+  fill(255,255,255);
+  textAlign(LEFT);
+  textSize(11);
+  String zoom_string = str(zoom).substring(0, 3);
+  String x_off_string = str(x_offset).substring(0, 3);
+  String y_off_string = str(y_offset).substring(0, 3);
+  
+  text(zoom_string + "x zoom factor, x:"+ x_off_string + ", y:" + y_off_string, 0, 10); //Draw Activation Text
+
 }
 
 void drawNeuralNetwork(){
-  println(network.layers.length);
   //Base x value for leftmost layer
   float curr_x = network_x;
   
