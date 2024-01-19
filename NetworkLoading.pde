@@ -3,9 +3,18 @@ void generate_network(){
 }
 
 void save_network(){
+  selectOutput("Create Network file", "networkOutputSelected");
+}
+
+void networkOutputSelected(File selection){
+  //PrintWriter output = createOutput(selection.getAbsolutePath());
   return;
 }
 
 void load_network(){
-  return;
+  selectInput("Select Network to load.", "networkSelected");
+}
+
+void networkSelected(File selection){
+  print(selection + " selected");
 }

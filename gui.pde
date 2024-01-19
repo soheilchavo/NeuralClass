@@ -66,6 +66,10 @@ public void NeuronsBoxChanged(GTextField source, GEvent event) { //_CODE_:Neuron
   neurons_per_layer = int(NeuronsBox.getText());
 } //_CODE_:NeuronsBox:235518:
 
+synchronized public void win_draw2(PApplet appc, GWinData data) { //_CODE_:Network_Output:364765:
+  appc.background(230);
+} //_CODE_:Network_Output:364765:
+
 
 
 // Create all the GUI controls. 
@@ -164,7 +168,15 @@ public void createGUI(){
   GenerateLabel.setText("Network Parameters");
   GenerateLabel.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   GenerateLabel.setOpaque(false);
+  Network_Output = GWindow.getWindow(this, "NetworkOutput", 950, 250, 300, 230, JAVA2D);
+  Network_Output.noLoop();
+  Network_Output.setActionOnClose(G4P.KEEP_OPEN);
+  Network_Output.addDrawHandler(this, "win_draw2");
+  OutputLabel = new GLabel(Network_Output, 6, 6, 80, 20);
+  OutputLabel.setText("Output");
+  OutputLabel.setOpaque(false);
   Parameters_Window.loop();
+  Network_Output.loop();
 }
 
 // Variable declarations 
@@ -192,3 +204,5 @@ GLabel NeuronsLabel;
 GTextField LayersBox; 
 GTextField NeuronsBox; 
 GLabel GenerateLabel; 
+GWindow Network_Output;
+GLabel OutputLabel; 
