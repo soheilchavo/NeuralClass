@@ -1,4 +1,8 @@
+int global_serial = 0;
+
 class Neuron {
+
+  int serial; //Unique number assined to neuron (for loading and saving networks)
   
   float activation; //0-1 number range
   
@@ -19,6 +23,8 @@ class Neuron {
     this.del_bias = 0;
     this.activation_sum = 0;
     this.connected_neurons = new ArrayList<Neuron>();
+    global_serial += 1;
+    this.serial = global_serial;
   }
   
   void update_neuron(float alpha){
@@ -68,7 +74,7 @@ class Layer{
     for(int i = 0; i < n; i++){
       this.neurons[i] = new Neuron();
     }
-    
+   
     //If this is not the first layer
     if(prev_layer != null){
       //Create connections between each neuron in the last layer and in the current one

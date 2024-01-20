@@ -41,6 +41,7 @@ void keyPressed() {
   if (key == '-' || key == 'i')
     zoom -= zoom_sensitivity;
     
+  //////////////////////////////////////////////////
   //TAKE OUT
   if (key == 'f')
     feed_forward(network, new float[] {0, 1, 45, 4});

@@ -1,3 +1,6 @@
+//Neural Class
+//Created by: Soheil Chavoshi, Jan. 29th, 2024
+
 import g4p_controls.*;
 
 //Network Hyperparameters
@@ -5,7 +8,7 @@ int epochs = 5; //Number of cycles ran on the training data
 int batch_size = 4; //Batch size for training with stochastic gradient descent
 float alpha = 0.5; //Learning step taken in backpropogation
 
-boolean randomize_weight_and_biases = true; //Randomizes w/b on network initialization
+boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
 
 String activation = "Sigmoid"; //Normalization function for neuron activation, choose from Sigmoid, inverse tan, and relu
 String loss = "Quadratic"; //Cost function for backpropogation 

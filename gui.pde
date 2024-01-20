@@ -35,7 +35,7 @@ public void BatchSizeChanged(GTextField source, GEvent event) { //_CODE_:BatchSi
 } //_CODE_:BatchSizeField:735693:
 
 public void RandomizeChanged(GCheckbox source, GEvent event) { //_CODE_:RandomizeBox:490513:
-  randomize_weight_and_biases = RandomizeBox.isSelected();
+  randomize_weight_and_bias = RandomizeBox.isSelected();
 } //_CODE_:RandomizeBox:490513:
 
 public void AlphaChanged(GTextField source, GEvent event) { //_CODE_:AlphaBox:380148:
