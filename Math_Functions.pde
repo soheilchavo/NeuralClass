@@ -64,10 +64,10 @@ float loss_function(float y, float y_h){
    return 0;
 }
 
-float loss_function_avg(float y[], float y_h[]){
+float loss_function_total(float y[], float y_h[]){
   float sum = 0;
   for(int i = 0; i < y.length; i++){
     sum += loss_function(y[i], y_h[i]);
   }
-  return sum/y.length;
+  return sum;
 }

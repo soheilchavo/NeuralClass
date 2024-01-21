@@ -258,6 +258,5 @@ void networkSelected(File selection) {
   catch(Exception e) {
     println("Error loading the network, " + e);
   }
-  println(neurons_per_layer, network.layers[1].neurons.length);
   update_gui_values();
 }

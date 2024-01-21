@@ -37,12 +37,15 @@ void feed_forward(Network n, float[] set){
   
 void backprop(Network n, float[] correct_output){
   
-  //Find Cost for every neuron in output layer
-  int output_size = correct_output.length;
+  //Find cost
+  float[] output = new float[output_size];
+  
+  for(int i = 0; i < output_size; i++)
+    output[i] = n.layers[n.layers.length-1].neurons[i].activation;
+  
+  float cost = loss_function_total(output, correct_output);
   
   for(int i = 0; i < output_size; i++){
-    
-    float cost = quadratic_cost(n.layers[n.layers.length-1].neurons[i].activation, correct_output[i]);
     
   }
   

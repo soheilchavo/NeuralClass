@@ -3,28 +3,26 @@
 
 import g4p_controls.*;
 
+//Network Parameters
+String network_name = "MyNeuralNetwork"; //Name for saving and loading
+int hidden_layers = 4; //Number of layers between the input and output layers
+int neurons_per_layer = 6; //Number of neurons in hidden layers
+int input_size = 9; //Loaded from dataset, (ex. grayscale image would have 1920*1080 input neurons)
+int output_size = 2; //Number of classifications of data
+
 //Network Hyperparameters
 int epochs = 5; //Number of cycles ran on the training data
 int batch_size = 4; //Batch size for training with stochastic gradient descent
 float alpha = 0.5; //Learning step taken in backpropogation
-
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
-
 String[] activation_list = new String[] { "Sigmoid", "Inverse Tan", "Relu" };
 String[] loss_list = new String[] { "Logistic", "Quadratic"};
-int activation = 1; //Normalization function for neuron activation, choose from Sigmoid, inverse tan, and relu
-int loss = 0; //Cost function for backpropogation 
+int activation = 1; //Normalization function for neuron activation, index for the list above
+int loss = 0; //Cost function for backpropogation, index for the list above
 
-int hidden_layers = 4; //Number of layers between the input and output layers
-int neurons_per_layer = 6; //Number of neurons in hidden layers
-
-int input_size = 9; //Loaded from dataset, (ex. grayscale image would have 1920*1080 input neurons)
-int output_size = 2; //Number of classifications of data
-
-//Data Collection
+//Dataset variables
 String data_directory = "/data";
 String classification_type = "Name"; //By Name of file or by which Folder data is in
-String network_name = "MyNeuralNetwork"; //Name for saving and loading
 
 //Network visual parameters
 float[] background_col = new float[] {8, 8, 13};
@@ -38,16 +36,14 @@ float neuron_bright_offset = 90;
 color activation_text_colour = color(0, 0, 0);
 
 float neuron_size = 35;
-float connection_width = 2.9;
-
-float layer_padding = 250;
 float neuron_padding = 60;
+
+float connection_width = 2.9;
+float layer_padding = 250;
 
 //Coords of the network on screen
 float network_x = 0;
 float network_y = 300;
-
-int animation_buffer = 100; //Miliseconds of delay between each step of the visualization
 
 //Camera Controls
 float zoom = 1.00;
@@ -159,7 +155,7 @@ void drawNeuralNetwork(){
   
 }
 
-
+//Updates gui with program values
 void update_gui_values(){
   EpochField.setText(str(epochs));
   ActivationList.setItems(activation_list, activation);
