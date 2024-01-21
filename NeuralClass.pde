@@ -60,8 +60,10 @@ Network network = null; //Main Network for the program
 
 void setup(){
   size(500, 500);
-  createGUI();
   frameRate(18);
+  
+  createGUI();
+  update_gui_values();
   generate_network();
 }
 
@@ -152,5 +154,10 @@ void drawNeuralNetwork(){
       text(activation_text, n.x, n.y); //Draw Activation Text
     }
   }
+  
+}
+
+
+void update_gui_values(){
   
 }

@@ -81,7 +81,10 @@ class Layer{
       this.connections = new Connection[n*prev_layer.neurons.length];
       for(int n_0 = 0; n_0 < n; n_0++){
         for(int n_1 = 0; n_1 < prev_layer.neurons.length; n_1++){
-          this.connections[n_0*prev_layer.neurons.length + n_1] = new Connection(prev_layer.neurons[n_1], this.neurons[n_0], random(-1,1));
+          float weight = 0;
+          if(randomize_weight_and_bias)
+            weight = random(-1,1);
+          this.connections[n_0*prev_layer.neurons.length + n_1] = new Connection(prev_layer.neurons[n_1], this.neurons[n_0], weight);
           this.neurons[n_0].connected_neurons.add(prev_layer.neurons[n_1]);
         }
       }
@@ -133,5 +136,13 @@ class Network{
     for(Layer l: this.layers){
       l.update_layer(alpha);
     }
+  }
+  
+  Neuron find_neuron_by_serial(int s, int l){
+    for(Neuron n: this.layers[l].neurons){
+      if(n.serial == s)
+        return n;
+    }
+    return null;
   }
 }
