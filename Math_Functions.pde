@@ -27,21 +27,21 @@ float relu_prime(float x){
 }
 
 float activation_function(float x){
-  if(activation == "Sigmoid")
+  if(activation == index_in_arr(activation_list, "Sigmoid"))
     return sigmoid(x);
-  if(activation == "Inverse Tan")
+  if(activation == index_in_arr(activation_list, "Inverse Tan"))
     return inv_tan(x);
-  if(activation == "Relu")
+  if(activation == index_in_arr(activation_list, "Relu"))
     return relu(x);
    return 0;
 }
 
 float activation_function_prime(float x){
-  if(activation == "Sigmoid")
+  if(activation == index_in_arr(activation_list, "Sigmoid"))
     return sigmoid_prime(x);
-  if(activation == "Inverse Tan")
+  if(activation == index_in_arr(activation_list, "Inverse Tan"))
     return inv_tan_prime(x);
-  if(activation == "Relu")
+  if(activation == index_in_arr(activation_list, "Relu"))
     return relu_prime(x);
    return 0;
 }
@@ -57,9 +57,9 @@ float cross_entropy_cost(float y, float y_h){
 }
 
 float loss_function(float y, float y_h){
-  if(activation == "Quadratic Cost")
+  if(activation == index_in_arr(loss_list, "Quadratic"))
     return quadratic_cost(y, y_h);
-  if(activation == "Logistic Cost")
+  if(activation == index_in_arr(loss_list, "Logistic"))
     return cross_entropy_cost(y, y_h);
    return 0;
 }

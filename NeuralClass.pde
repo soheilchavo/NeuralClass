@@ -10,11 +10,13 @@ float alpha = 0.5; //Learning step taken in backpropogation
 
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
 
-String activation = "Sigmoid"; //Normalization function for neuron activation, choose from Sigmoid, inverse tan, and relu
-String loss = "Quadratic"; //Cost function for backpropogation 
+String[] activation_list = new String[] { "Sigmoid", "Inverse Tan", "Relu" };
+String[] loss_list = new String[] { "Logistic", "Quadratic"};
+int activation = 1; //Normalization function for neuron activation, choose from Sigmoid, inverse tan, and relu
+int loss = 0; //Cost function for backpropogation 
 
 int hidden_layers = 4; //Number of layers between the input and output layers
-int neurons_per_layer = 14; //Number of neurons in hidden layers
+int neurons_per_layer = 6; //Number of neurons in hidden layers
 
 int input_size = 9; //Loaded from dataset, (ex. grayscale image would have 1920*1080 input neurons)
 int output_size = 2; //Number of classifications of data
@@ -159,5 +161,12 @@ void drawNeuralNetwork(){
 
 
 void update_gui_values(){
-  
+  EpochField.setText(str(epochs));
+  ActivationList.setItems(activation_list, activation);
+  LossFunctionList.setItems(loss_list, loss);
+  BatchSizeField.setText(str(batch_size));
+  RandomizeBox.setSelected(randomize_weight_and_bias);
+  AlphaBox.setText(str(alpha));
+  LayersBox.setText(str(hidden_layers));
+  NeuronsBox.setText(str(neurons_per_layer));
 }

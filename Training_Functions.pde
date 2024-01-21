@@ -1,3 +1,26 @@
+void print_network_activations(Network n){
+
+  for(int l = 0; l < n.layers.length; l++){
+    
+    println("\nLayer: " + l);
+    
+    for(Neuron neuron: network.layers[l].neurons){
+      println(neuron.activation);
+    }
+    
+  }
+  
+}
+
+int index_in_arr(String[] arr, String item){
+  for(int i = 0; i < arr.length; i++){
+    if(arr[i] == item){
+      return i;
+    }
+  }
+  return 0;
+}
+
 void feed_forward(Network n, float[] set){
   
   //Set first layer neurons to the input data (Note, input must match the number of neurons in input layer)

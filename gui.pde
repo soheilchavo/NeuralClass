@@ -23,11 +23,11 @@ public void EpochFieldChagned(GTextField source, GEvent event) { //_CODE_:EpochF
 } //_CODE_:EpochField:826180:
 
 public void ActivationListChanged(GDropList source, GEvent event) { //_CODE_:ActivationList:754752:
-  activation = ActivationList.getSelectedText();
+  activation = index_in_arr(activation_list, ActivationList.getSelectedText());
 } //_CODE_:ActivationList:754752:
 
 public void LossFunctionListChanged(GDropList source, GEvent event) { //_CODE_:LossFunctionList:713425:
-  loss = LossFunctionList.getSelectedText();
+  loss = index_in_arr(loss_list, ActivationList.getSelectedText());
 } //_CODE_:LossFunctionList:713425:
 
 public void BatchSizeChanged(GTextField source, GEvent event) { //_CODE_:BatchSizeField:735693:
