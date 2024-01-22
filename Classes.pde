@@ -156,6 +156,14 @@ class Network{
     return null;
   }
   
+  Connection find_connection_by_serial(int a, int b, int l){
+    for(Connection c: this.layers[l].connections){
+      if(c.a.serial == a && c.b.serial == b)
+        return c;
+    }
+    return null;
+  }
+  
   float[] get_layer_activation(int i){
     float[] out = new float[this.layers[i].neurons.length];
     for(int x = 0; x < out.length; x++){

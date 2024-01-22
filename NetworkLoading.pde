@@ -46,8 +46,8 @@ void networkOutputSelected(File selection) {
 
         //String that holds all of the serial numbers for the neurons connected to this one, starting with itself
         String connection_string = str(neuron.serial);
-        for (Neuron c : neuron.connected_neurons) {
-          connection_string += "," + c.serial;
+        for (Connection c : neuron.connections) {
+          connection_string += "," + c.b.serial;
         }
 
         output.println("Actvation=" + neuron.activation + ",Bias=" + neuron.bias + ",Serials=" + connection_string);
@@ -193,10 +193,10 @@ void networkSelected(File selection) {
               String serial_str = period_splits[2].substring(period_splits[2].indexOf('=')+1); //String of serial numbers
               neuron.serial = int(serial_str.substring(0)); //Set own Serial Number
 
-              neuron.connected_neurons = new ArrayList<Neuron>(); //initialize connected neurons list
+              neuron.connections = new ArrayList<Connection>(); //initialize connected neurons list
 
               for (int i = 1; i < serial_str.length(); i++) { //Load every connection in previous layer
-                neuron.connected_neurons.add(network.find_neuron_by_serial(int(serial_str.charAt(i)), curr_layer));
+                neuron.connections.add(network.find_connection_by_serial(neuron.serial, int(serial_str.charAt(i)), curr_layer));
               }
 
               curr_neuron += 1;
