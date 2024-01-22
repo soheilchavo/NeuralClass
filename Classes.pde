@@ -14,7 +14,7 @@ class Neuron {
   
   float activation_sum; //Sum of previous layer's weighted activations
   
-  ArrayList<Neuron> connected_neurons; //Neurons in the previous layer that are connected to this one
+  ArrayList<Connection> connections; //Neurons in the previous layer that are connected to this one
   
   //Physical coords for drawing the neuron
   float x;
@@ -28,7 +28,7 @@ class Neuron {
     this.average_bias_del = new ArrayList<Float>();
     
     this.activation_sum = 0;
-    this.connected_neurons = new ArrayList<Neuron>();
+    this.connections = new ArrayList<Connection>();
     global_serial += 1;
     this.serial = global_serial;
   }
@@ -95,7 +95,7 @@ class Layer{
           if(randomize_weight_and_bias)
             weight = random(-1,1);
           this.connections[n_0*prev_layer.neurons.length + n_1] = new Connection(prev_layer.neurons[n_1], this.neurons[n_0], weight);
-          this.neurons[n_0].connected_neurons.add(prev_layer.neurons[n_1]);
+          this.neurons[n_0].connections.add(this.connections[n_0*prev_layer.neurons.length + n_1]);
         }
       }
     }

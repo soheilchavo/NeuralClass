@@ -45,17 +45,30 @@ void feed_forward(Network n, float[] set){
   
 void backprop(Network n, float[] correct_output){
   
-  float cost = loss_function(n.get_layer_activation(n.layers.length-1), correct_output);
-  
   for(int i = 0; i < output_size; i++){
     
-    float neuron_activation = n.layers[n.layers.length-1].neurons[i].activation;
+    Neuron curr_neuron = n.layers[n.layers.length-1].neurons[i];
   
     ArrayList<Float> del_stack = new ArrayList<Float>(); //Stack that holds all the derrivatives in the chain as we go through the network
     
-    del_stack.add();
-    
+    del_stack.add(loss_function_prime_single(curr_neuron.activation, correct_output[i]));
+    backprop_recursive(del_stack, curr_neuron);
   }
+  
+  //Update del for all neurons and weights
+  
+}
+
+void backprop_recursive(ArrayList<Float> stack, Neuron curr_neuron){
+  
+  stack.add(activation_function_prime(curr_neuron.activation));
+  
+  for(Connection c: curr_neuron.connections){
+    backprop_recursive(new ArrayList<>(stack), c.a);
+    //Update weight
+  }
+  
+  //Update Bias
   
 }
 
