@@ -5,22 +5,28 @@ class Neuron {
   int serial; //Unique number assined to neuron (for loading and saving networks)
   
   float activation; //0-1 number range
+  float z_val; //Value claculated from weights and biases right before it goes into the activation function
   
   float bias; //A sort of y intercept for the activation function
-  float del_bias; //How much the bias will change in the next cycle for stochastic gradient descent
+  float del_bias; //How much the bias will change for each cycle of the chain rule in the output layer
   
-  float activation_sum; //Sum of weights and previous activations for activation function
+  ArrayList<Float> average_bias_del; //Average changes in the bias across the training batch
+  
+  float activation_sum; //Sum of previous layer's weighted activations
   
   ArrayList<Neuron> connected_neurons; //Neurons in the previous layer that are connected to this one
   
-  //Physical coords for drwaing the neuron
+  //Physical coords for drawing the neuron
   float x;
   float y;
   
   Neuron(){
     this.bias = random(-1, 1);
     this.activation = random(1);
+    this.z_val = 0;
     this.del_bias = 0;
+    this.average_bias_del = new ArrayList<Float>();
+    
     this.activation_sum = 0;
     this.connected_neurons = new ArrayList<Neuron>();
     global_serial += 1;
@@ -33,7 +39,8 @@ class Neuron {
   }
   
   void calculate_activation(){
-    this.activation = activation_function(this.activation_sum+this.bias);
+    this.z_val = this.activation_sum+this.bias;
+    this.activation = activation_function(this.z_val);
     this.activation_sum = 0;
   }
 
@@ -42,7 +49,9 @@ class Neuron {
 class Connection{
 
   float weight; //How much effect this connection has to the neuron it's connecting to
-  float del_weight; //How much the weight will change in the next cycle
+  float del_weight; //How much the weight will change for each cycle of the chain rule in the output layer
+  
+  ArrayList<Float> average_weight_del; //Average changes in the weight across the training batch
   
   Neuron a;
   Neuron b;
@@ -50,6 +59,7 @@ class Connection{
   Connection(Neuron one, Neuron two, float w){
     this.weight = w;
     this.del_weight = 0;
+    this.average_weight_del = new ArrayList<Float>();
     
     this.a = one;
     this.b = two;
@@ -144,5 +154,13 @@ class Network{
         return n;
     }
     return null;
+  }
+  
+  float[] get_layer_activation(int i){
+    float[] out = new float[this.layers[i].neurons.length];
+    for(int x = 0; x < out.length; x++){
+      out[x] = this.layers[i].neurons[x].activation;
+    }
+    return out;
   }
 }

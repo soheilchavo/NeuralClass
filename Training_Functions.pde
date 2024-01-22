@@ -12,6 +12,14 @@ void print_network_activations(Network n){
   
 }
 
+float[] random_inputs(){
+  float[] out = new float[input_size];
+  for(int i = 0; i < input_size; i++){
+    out[i] = random(1);
+  }
+  return out;
+}
+
 int index_in_arr(String[] arr, String item){
   for(int i = 0; i < arr.length; i++){
     if(arr[i] == item){
@@ -37,15 +45,15 @@ void feed_forward(Network n, float[] set){
   
 void backprop(Network n, float[] correct_output){
   
-  //Find cost
-  float[] output = new float[output_size];
-  
-  for(int i = 0; i < output_size; i++)
-    output[i] = n.layers[n.layers.length-1].neurons[i].activation;
-  
-  float cost = loss_function_total(output, correct_output);
+  float cost = loss_function(n.get_layer_activation(n.layers.length-1), correct_output);
   
   for(int i = 0; i < output_size; i++){
+    
+    float neuron_activation = n.layers[n.layers.length-1].neurons[i].activation;
+  
+    ArrayList<Float> del_stack = new ArrayList<Float>(); //Stack that holds all the derrivatives in the chain as we go through the network
+    
+    del_stack.add();
     
   }
   

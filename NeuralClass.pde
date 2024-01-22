@@ -15,13 +15,15 @@ int epochs = 5; //Number of cycles ran on the training data
 int batch_size = 4; //Batch size for training with stochastic gradient descent
 float alpha = 0.5; //Learning step taken in backpropogation
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
+
 String[] activation_list = new String[] { "Sigmoid", "Inverse Tan", "Relu" };
-String[] loss_list = new String[] { "Logistic", "Quadratic"};
-int activation = 1; //Normalization function for neuron activation, index for the list above
+String[] loss_list = new String[] { "Linear", "Quadratic"};
+int activation = 0; //Normalization function for neuron activation, index for the list above
 int loss = 0; //Cost function for backpropogation, index for the list above
 
 //Dataset variables
 String data_directory = "/data";
+int dataset_size = 1;
 String classification_type = "Name"; //By Name of file or by which Folder data is in
 
 //Network visual parameters
@@ -57,7 +59,7 @@ float mouse_sensitivity = 1.4; //How sensitive dragging is
 Network network = null; //Main Network for the program
 
 void setup(){
-  size(500, 500);
+  size(700, 700);
   frameRate(18);
   
   createGUI();

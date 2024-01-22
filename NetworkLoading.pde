@@ -1,5 +1,4 @@
 void generate_network() {
-  println(1);
   network = new Network(input_size, output_size, hidden_layers, neurons_per_layer);
 }
 
@@ -69,12 +68,11 @@ void networkOutputSelected(File selection) {
 
     //First create a set of random normalized inputs
     output.print("Inputs=");
-    float[] test_inputs = new float[input_size];
-    for (int i = 0; i < input_size; i++) {
-      test_inputs[i] = random(1);
-      if (i > 0)
+    float[] test_inputs = random_inputs();
+    for(float inp: test_inputs) {
+      if (inp != test_inputs[0])
         output.print(",");
-      output.print(test_inputs[i]);
+      output.print(inp);
     }
 
     //Feed the outputs through the network

@@ -103,7 +103,7 @@ public void createGUI(){
   G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
   G4P.setMouseOverEnabled(false);
   surface.setTitle("NeuralClass");
-  Parameters_Window = GWindow.getWindow(this, "Parameters", 150, 150, 260, 450, JAVA2D);
+  Parameters_Window = GWindow.getWindow(this, "Parameters", 244, 150, 260, 450, JAVA2D);
   Parameters_Window.noLoop();
   Parameters_Window.setActionOnClose(G4P.KEEP_OPEN);
   Parameters_Window.addDrawHandler(this, "win_draw1");
@@ -190,7 +190,7 @@ public void createGUI(){
   GenerateLabel.setText("Network Parameters");
   GenerateLabel.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   GenerateLabel.setOpaque(false);
-  Network_Output = GWindow.getWindow(this, "NetworkOutput", 950, 250, 300, 400, JAVA2D);
+  Network_Output = GWindow.getWindow(this, "NetworkOutput", 1425, 250, 300, 400, JAVA2D);
   Network_Output.noLoop();
   Network_Output.setActionOnClose(G4P.KEEP_OPEN);
   Network_Output.addDrawHandler(this, "win_draw2");
