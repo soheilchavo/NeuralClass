@@ -66,16 +66,24 @@ public void NeuronsBoxChanged(GTextField source, GEvent event) { //_CODE_:Neuron
   neurons_per_layer = int(NeuronsBox.getText());
 } //_CODE_:NeuronsBox:235518:
 
+public void TraningDatasetButtonClicked(GButton source, GEvent event) { //_CODE_:TrainingDatasetButton:551031:
+  println("TrainingDatasetButton - GButton >> GEvent." + event + " @ " + millis());
+} //_CODE_:TrainingDatasetButton:551031:
+
 synchronized public void win_draw2(PApplet appc, GWinData data) { //_CODE_:Network_Output:364765:
   appc.background(230);
 } //_CODE_:Network_Output:364765:
 
 public void SampleButtonClicked(GButton source, GEvent event) { //_CODE_:SelectSample:765611:
-  println("SelectSample - GButton >> GEvent." + event + " @ " + millis());
+  output_mode = "Sample";
+  SelectSample.setLocalColorScheme(5);
+  SetButton.setLocalColorScheme(0);
 } //_CODE_:SelectSample:765611:
 
 public void SetButtonClicked(GButton source, GEvent event) { //_CODE_:SetButton:310582:
-  println("SetButton - GButton >> GEvent." + event + " @ " + millis());
+  output_mode = "Set";
+  SetButton.setLocalColorScheme(5);
+  SelectSample.setLocalColorScheme(0);
 } //_CODE_:SetButton:310582:
 
 public void SampleImageHover(GImageButton source, GEvent event) { //_CODE_:SampleImage:939592:
@@ -83,15 +91,15 @@ public void SampleImageHover(GImageButton source, GEvent event) { //_CODE_:Sampl
 } //_CODE_:SampleImage:939592:
 
 public void DataSelectClicked(GButton source, GEvent event) { //_CODE_:DataSelectButton:869626:
-  println("DataSelectButton - GButton >> GEvent." + event + " @ " + millis());
+  select_dataset();
 } //_CODE_:DataSelectButton:869626:
 
 public void FeedForwardButtonClicked(GButton source, GEvent event) { //_CODE_:FeedForwardButton:837957:
-  println("FeedForwardButton - GButton >> GEvent." + event + " @ " + millis());
+  feed_forward_data();
 } //_CODE_:FeedForwardButton:837957:
 
 public void OutputDirectoryButtonClicked(GButton source, GEvent event) { //_CODE_:OutputDirectoryButton:259796:
-  println("OutputDirectoryButton - GButton >> GEvent." + event + " @ " + millis());
+  select_output_dir();
 } //_CODE_:OutputDirectoryButton:259796:
 
 
@@ -103,7 +111,7 @@ public void createGUI(){
   G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
   G4P.setMouseOverEnabled(false);
   surface.setTitle("NeuralClass");
-  Parameters_Window = GWindow.getWindow(this, "Parameters", 244, 150, 260, 450, JAVA2D);
+  Parameters_Window = GWindow.getWindow(this, "Parameters", 244, 150, 260, 500, JAVA2D);
   Parameters_Window.noLoop();
   Parameters_Window.setActionOnClose(G4P.KEEP_OPEN);
   Parameters_Window.addDrawHandler(this, "win_draw1");
@@ -152,7 +160,7 @@ public void createGUI(){
   AlphaBox.setText("0.5");
   AlphaBox.setOpaque(true);
   AlphaBox.addEventHandler(this, "AlphaChanged");
-  TrainButton = new GButton(Parameters_Window, 20, 400, 220, 40);
+  TrainButton = new GButton(Parameters_Window, 17, 439, 220, 40);
   TrainButton.setText("Train Network");
   TrainButton.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   TrainButton.addEventHandler(this, "TrainButtonClicked");
@@ -190,19 +198,24 @@ public void createGUI(){
   GenerateLabel.setText("Network Parameters");
   GenerateLabel.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   GenerateLabel.setOpaque(false);
-  Network_Output = GWindow.getWindow(this, "NetworkOutput", 1425, 250, 300, 400, JAVA2D);
+  TrainingDatasetButton = new GButton(Parameters_Window, 50, 400, 160, 30);
+  TrainingDatasetButton.setText("Load Training Dataset");
+  TrainingDatasetButton.setLocalColorScheme(GCScheme.RED_SCHEME);
+  TrainingDatasetButton.addEventHandler(this, "TraningDatasetButtonClicked");
+  Network_Output = GWindow.getWindow(this, "NetworkOutput", 400, 250, 300, 400, JAVA2D);
   Network_Output.noLoop();
   Network_Output.setActionOnClose(G4P.KEEP_OPEN);
   Network_Output.addDrawHandler(this, "win_draw2");
   OutputLabel = new GLabel(Network_Output, 20, 20, 80, 20);
   OutputLabel.setText("Output Mode:");
   OutputLabel.setOpaque(false);
-  SelectSample = new GButton(Network_Output, 120, 20, 70, 20);
+  SelectSample = new GButton(Network_Output, 111, 20, 80, 20);
   SelectSample.setText("Sample");
-  SelectSample.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
+  SelectSample.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   SelectSample.addEventHandler(this, "SampleButtonClicked");
   SetButton = new GButton(Network_Output, 200, 20, 80, 20);
   SetButton.setText("Set");
+  SetButton.setLocalColorScheme(GCScheme.RED_SCHEME);
   SetButton.addEventHandler(this, "SetButtonClicked");
   SampleImage = new GImageButton(Network_Output, 80, 130, 140, 130, new String[] { "6.png", "6.png", "6.png" } );
   SampleImage.addEventHandler(this, "SampleImageHover");
@@ -216,6 +229,7 @@ public void createGUI(){
   DataSelectButton.addEventHandler(this, "DataSelectClicked");
   FeedForwardButton = new GButton(Network_Output, 100, 270, 110, 30);
   FeedForwardButton.setText("Feed Forward");
+  FeedForwardButton.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   FeedForwardButton.addEventHandler(this, "FeedForwardButtonClicked");
   NetworkGuessLabel = new GLabel(Network_Output, -10, 310, 310, 20);
   NetworkGuessLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
@@ -223,6 +237,7 @@ public void createGUI(){
   NetworkGuessLabel.setOpaque(false);
   OutputDirectoryButton = new GButton(Network_Output, 150, 60, 130, 30);
   OutputDirectoryButton.setText("Select Output Directory");
+  OutputDirectoryButton.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   OutputDirectoryButton.addEventHandler(this, "OutputDirectoryButtonClicked");
   Parameters_Window.loop();
   Network_Output.loop();
@@ -253,6 +268,7 @@ GLabel NeuronsLabel;
 GTextField LayersBox; 
 GTextField NeuronsBox; 
 GLabel GenerateLabel; 
+GButton TrainingDatasetButton; 
 GWindow Network_Output;
 GLabel OutputLabel; 
 GButton SelectSample; 

@@ -68,7 +68,7 @@ void backprop_recursive(ArrayList<Float> stack, Neuron curr_neuron){
   
   for(Connection c: curr_neuron.connections){
     stack.add(c.a.activation);
-    backprop_recursive(new ArrayList<>(stack), c.a);
+    backprop_recursive(new ArrayList<Float>(stack), c.a);
     c.del_weight += multiply_arraylist_items(stack);
   }
 }
