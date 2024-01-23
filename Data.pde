@@ -18,6 +18,8 @@ void training_dataset_selected(File selection){
   
   training_data = new ArrayList<Sample>();
   
+  output_size = selection.listFiles().length;
+  
   for(File f: selection.listFiles()){
     for(File s: f.listFiles()){
       training_data.add(new Sample(s, f.getName()));
@@ -31,11 +33,14 @@ void select_testing_dataset(){
 }
 
 void testing_dataset_selected(File selection){
+  
   testing_data = new ArrayList<Sample>();
+  
+  output_size = selection.listFiles().length;
   
   for(File f: selection.listFiles()){
     for(File s: f.listFiles()){
-      training_data.add(new Sample(s, f.getName()));
+      testing_data.add(new Sample(s, f.getName()));
     }
   }
 }
