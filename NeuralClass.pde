@@ -6,7 +6,7 @@ import g4p_controls.*;
 //Network Parameters
 String network_name = "MyNeuralNetwork"; //Name for saving and loading
 int hidden_layers = 4; //Number of layers between the input and output layers
-int neurons_per_layer = 8; //Number of neurons in hidden layers
+int neurons_per_layer = 14; //Number of neurons in hidden layers
 int input_size = 5; //Loaded from dataset, (ex. grayscale image would have 1920*1080 input neurons)
 int output_size = 3; //Number of classifications of data
 
@@ -41,7 +41,7 @@ float neuron_size = 20;
 float neuron_padding = 25;
 
 float connection_width = 1.6;
-float layer_padding = 80;
+float layer_padding = 150;
 
 //Coords of the network on screen
 float network_x = 0;
