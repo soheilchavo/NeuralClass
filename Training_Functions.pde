@@ -62,7 +62,6 @@ void backprop(float[] correct_output){
 }
 
 void backprop_recursive(ArrayList<Float> stack, Neuron curr_neuron){
-  
   stack.add(activation_function_prime(curr_neuron.activation));
   
   curr_neuron.del_bias += multiply_arraylist_items(stack);

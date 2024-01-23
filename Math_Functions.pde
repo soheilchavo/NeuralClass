@@ -99,9 +99,9 @@ float loss_function_prime(float y[], float y_h[]){
 }
 
 float multiply_arraylist_items(ArrayList<Float> arr){
-  float sum = 0;
+  float product = 1;
   for(Float f: arr){
-    sum += f;
+    product *= f;
   }
-  return sum;
+  return product;
 }

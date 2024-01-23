@@ -39,6 +39,7 @@ class Neuron {
     }
     this.del_bias /= this.average_bias_del.size();
     this.bias += del_bias*alpha;
+    this.bias = activation_function(this.bias);
     this.del_bias = 0;
     this.average_bias_del = new ArrayList<Float>();
   }
@@ -82,6 +83,8 @@ class Connection{
     }
     this.del_weight /= this.average_weight_del.size();
     this.weight += del_weight*alpha;
+    this.weight = clamp(this.weight, -1, 1);
+    
     this.del_weight = 0;
     this.average_weight_del = new ArrayList<Float>();
   }
