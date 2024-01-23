@@ -204,7 +204,7 @@ public void createGUI(){
   SetButton = new GButton(Network_Output, 200, 20, 80, 20);
   SetButton.setText("Set");
   SetButton.addEventHandler(this, "SetButtonClicked");
-  SampleImage = new GImageButton(Network_Output, 80, 130, 140, 130, new String[] { "RedPanda2ElectricBoggaloo.png", "RedPanda2ElectricBoggaloo.png", "RedPanda2ElectricBoggaloo.png" } );
+  SampleImage = new GImageButton(Network_Output, 80, 130, 140, 130, new String[] { "6.png", "6.png", "6.png" } );
   SampleImage.addEventHandler(this, "SampleImageHover");
   DataPreviewLabel = new GLabel(Network_Output, 110, 100, 80, 20);
   DataPreviewLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);

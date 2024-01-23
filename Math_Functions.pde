@@ -97,3 +97,11 @@ float loss_function_prime(float y[], float y_h[]){
   }
   return sum;
 }
+
+float multiply_arraylist_items(ArrayList<Float> arr){
+  float sum = 0;
+  for(Float f: arr){
+    sum += f;
+  }
+  return sum;
+}

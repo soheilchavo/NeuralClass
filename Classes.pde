@@ -33,15 +33,25 @@ class Neuron {
     this.serial = global_serial;
   }
   
-  void update_neuron(float alpha){
+  void update_neuron(){
+    for(float d: this.average_bias_del){
+      this.del_bias += d;
+    }
+    this.del_bias /= this.average_bias_del.size();
     this.bias += del_bias*alpha;
     this.del_bias = 0;
+    this.average_bias_del = new ArrayList<Float>();
   }
   
   void calculate_activation(){
     this.z_val = this.activation_sum+this.bias;
     this.activation = activation_function(this.z_val);
     this.activation_sum = 0;
+  }
+  
+  void update_del_value(){
+    this.average_bias_del.add(del_bias);
+    this.del_bias = 0;
   }
 
 }
@@ -65,8 +75,19 @@ class Connection{
     this.b = two;
   }
   
-  void update_connection(float alpha){
+  void update_connection(){
+    this.del_weight = 0;
+    for(float d: this.average_weight_del){
+      this.del_weight += d;
+    }
+    this.del_weight /= this.average_weight_del.size();
     this.weight += del_weight*alpha;
+    this.del_weight = 0;
+    this.average_weight_del = new ArrayList<Float>();
+  }
+  
+  void update_del_value(){
+    this.average_weight_del.add(del_weight);
     this.del_weight = 0;
   }
   
@@ -102,12 +123,21 @@ class Layer{
     
   }
   
-  void update_layer(float alpha){
+  void update_layer(){
     for(Connection c: connections){
-      c.update_connection(alpha);
+      c.update_connection();
     }
     for(Neuron n: neurons){
-      n.update_neuron(alpha);
+      n.update_neuron();
+    }
+  }
+  
+  void update_del_values(){
+    for(Connection c: connections){
+      c.update_del_value();
+    }
+    for(Neuron n: neurons){
+      n.update_del_value();
     }
   }
   
@@ -142,9 +172,15 @@ class Network{
     layers[layers.length-1] = new Layer(output_size, layers[layers.length-2]);
   } 
   
-  void update_network(float alpha){
-    for(Layer l: this.layers){
-      l.update_layer(alpha);
+  void update_network(){
+    for(int l = 1; l < this.layers.length; l++){
+      this.layers[l].update_layer();
+    }
+  }
+  
+  void update_del_values(){
+    for(int l = 1; l < this.layers.length; l++){
+      this.layers[l].update_del_values();
     }
   }
   

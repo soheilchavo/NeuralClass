@@ -1,53 +1,53 @@
-void print_network_activations(Network n){
-
-  for(int l = 0; l < n.layers.length; l++){
-    
-    println("\nLayer: " + l);
-    
-    for(Neuron neuron: network.layers[l].neurons){
-      println(neuron.activation);
-    }
-    
-  }
-  
-}
-
+//Generates a set of random activations for the input layer neurons
 float[] random_inputs(){
   float[] out = new float[input_size];
   for(int i = 0; i < input_size; i++){
-    out[i] = random(1);
+    out[i] = random(4);
   }
   return out;
 }
 
+//Finds the index of the item in the array through linear search (array is not sorted)
 int index_in_arr(String[] arr, String item){
   for(int i = 0; i < arr.length; i++){
     if(arr[i] == item){
       return i;
     }
   }
+  println("index_in_arr function could not find item"); //Warning message to prevent future misundestandings
   return 0;
 }
 
-void feed_forward(Network n, float[] set){
+//Feeds a set of data through the network and returns results
+void feed_forward(float[] set){
   
   //Set first layer neurons to the input data (Note, input must match the number of neurons in input layer)
   for(int index = 0; index < set.length; index++){
-    n.layers[0].neurons[index].activation = activation_function(set[index]);
+    network.layers[0].neurons[index].activation = activation_function(set[index]);
   }
 
   //Consecutivley itterate through layers and calculate activations
-  for(int l = 1; l < n.layers.length; l++){
-    n.layers[l].calc_activations();
+  for(int l = 1; l < network.layers.length; l++){
+    network.layers[l].calc_activations();
   }
   
+  //Set network outputs to output layer
+  network_output = new float[output_size];
+  network_guess = 0;
+  
+  for(int i = 0; i < output_size; i++){
+    network_output[i] = network.layers[network.layers.length-1].neurons[i].activation;
+    if(network_output[i] > network_output[network_guess]){ network_guess = i; }
+  }
+  
+  update_gui_values(); //Display network guess
 }
   
-void backprop(Network n, float[] correct_output){
+void backprop(float[] correct_output){
   
   for(int i = 0; i < output_size; i++){
     
-    Neuron curr_neuron = n.layers[n.layers.length-1].neurons[i];
+    Neuron curr_neuron = network.layers[network.layers.length-1].neurons[i];
   
     ArrayList<Float> del_stack = new ArrayList<Float>(); //Stack that holds all the derrivatives in the chain as we go through the network
     
@@ -56,6 +56,8 @@ void backprop(Network n, float[] correct_output){
   }
   
   //Update del for all neurons and weights
+  network.update_del_values();
+  network.update_network(); //TAKE THIS OUT
   
 }
 
@@ -63,16 +65,16 @@ void backprop_recursive(ArrayList<Float> stack, Neuron curr_neuron){
   
   stack.add(activation_function_prime(curr_neuron.activation));
   
+  curr_neuron.del_bias += multiply_arraylist_items(stack);
+  
   for(Connection c: curr_neuron.connections){
+    stack.add(c.a.activation);
     backprop_recursive(new ArrayList<>(stack), c.a);
-    //Update weight
+    c.del_weight += multiply_arraylist_items(stack);
   }
-  
-  //Update Bias
-  
 }
 
-void train(Network n, float[][] input, float[][] output, int epochs, int batch_size, float alpha){
+void train(float[][] input, float[][] output, int epochs){
 
   int set_size = ceil((input.length)/batch_size);
   
@@ -82,12 +84,21 @@ void train(Network n, float[][] input, float[][] output, int epochs, int batch_s
     
     for(int i = 0; i < input.length; i++){
       
-      feed_forward(n, input[i]);
-      backprop(n, output[i]);
+      feed_forward(input[i]);
+      backprop( output[i]);
       
       if(i % set_size == 0){
-        n.update_network(alpha);
+        network.update_network();
       }
+    }
+  }
+}
+
+void print_network_activations(Network n){
+  for(int l = 0; l < n.layers.length; l++){
+    println("\nLayer: " + l);
+    for(Neuron neuron: network.layers[l].neurons){
+      println(neuron.activation);
     }
   }
 }

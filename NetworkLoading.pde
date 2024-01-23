@@ -76,7 +76,7 @@ void networkOutputSelected(File selection) {
     }
 
     //Feed the outputs through the network
-    feed_forward(network, test_inputs);
+    feed_forward(test_inputs);
     output.println();
 
     //Store the outputs in the file
@@ -238,7 +238,7 @@ void networkSelected(File selection) {
     }
     
     //Test for corruption
-    feed_forward(network, input_test);
+    feed_forward(input_test);
     boolean corrupted = false;
 
     for (int i = 0; i < output_size; i++) {
