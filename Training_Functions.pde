@@ -44,33 +44,34 @@ void feed_forward(float[] set){
 }
   
 void backprop(float[] correct_output){
-  
-  for(int i = 0; i < output_size; i++){
-    
-    Neuron curr_neuron = network.layers[network.layers.length-1].neurons[i];
-  
-    ArrayList<Float> del_stack = new ArrayList<Float>(); //Stack that holds all the derrivatives in the chain as we go through the network
-    
-    del_stack.add(loss_function_prime_single(curr_neuron.activation, correct_output[i]));
-    backprop_recursive(del_stack, curr_neuron);
+ 
+  //Go through layers in reverse order, stop before reaching the last one
+  for(int i = network.layers.length-1; i > 0; i--){
+    //println("Layer:" + i);
+    //Go through all neurons in the layer
+    for(int j = 0; j < network.layers[i].neurons.length; j++){
+      Neuron curr_neuron = network.layers[i].neurons[j];
+      
+      //Calculate initial error
+      if(i == network.layers.length-1)
+        curr_neuron.error = loss_function_single(curr_neuron.activation, correct_output[j]);
+      
+      else{
+        for(Connection c: curr_neuron.connections_forward){
+          curr_neuron.error += c.b.error*c.weight;
+        }
+      }
+      
+      curr_neuron.del_bias.add(activation_function_prime(curr_neuron.error));
+      
+      for(Connection c: curr_neuron.connections){
+        c.del_weight.add(curr_neuron.error*activation_function_prime(curr_neuron.activation));
+      }
+    } 
   }
   
-  //Update del for all neurons and weights
-  network.update_del_values();
   network.update_network(); //TAKE THIS OUT
-  
-}
-
-void backprop_recursive(ArrayList<Float> stack, Neuron curr_neuron){
-  stack.add(activation_function_prime(curr_neuron.activation));
-  
-  curr_neuron.del_bias += multiply_arraylist_items(stack);
-  
-  for(Connection c: curr_neuron.connections){
-    stack.add(c.a.activation);
-    backprop_recursive(new ArrayList<Float>(stack), c.a);
-    c.del_weight += multiply_arraylist_items(stack);
-  }
+  redraw();
 }
 
 void train(float[][] input, float[][] output, int epochs){

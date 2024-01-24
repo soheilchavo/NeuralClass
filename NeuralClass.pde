@@ -38,25 +38,6 @@ float neuron_bright_offset = 40;
 
 color activation_text_colour = color(0, 0, 0);
 
-float neuron_size = 20;
-float neuron_padding = 25;
-
-float connection_width = 1.6;
-float layer_padding = 150;
-
-//Coords of the network on screen
-float network_x = 0;
-float network_y = 300;
-
-//Camera Controls
-float zoom = 1.00;
-float x_offset = 0.00;
-float y_offset = 0.00;
-
-float shift_sensitivity = 10; //How sensitive WASD keys are
-float zoom_sensitivity = 0.04; //How sensitive zoom is
-float mouse_sensitivity = 1.4; //How sensitive dragging is
-
 Network network = null; //Main Network for the program
 String[] output_classes = new String[] { "Toopy", "Bynoo" };
 float[] network_output;
@@ -73,41 +54,24 @@ void setup(){
 }
 
 void draw(){
-  
   background(background_col[0], background_col[1], background_col[2]); //Draw Background
-  
-  pushMatrix(); //Translate screen for camera controls
-  
-  translate(width/2, height/2);   //Center Zooming
-  scale(zoom);                    //Center Zooming
-  translate(-width/2, -height/2); //Center Zooming
-  translate(x_offset, y_offset);  //X and Y offsets
-  
   drawNeuralNetwork();
-  
-  popMatrix(); //Undo screen transformations
-  
-  //Draw Top-left info text
-  fill(255,255,255);
-  textAlign(LEFT);
-  textSize(11);
-  String zoom_string = str(zoom).substring(0, 3);
-  String x_off_string = str(x_offset).substring(0, 3);
-  String y_off_string = str(y_offset).substring(0, 3);
-  
-  text(zoom_string + "x zoom factor, x:"+ x_off_string + ", y:" + y_off_string, 0, 10); //Draw Text
-
 }
 
 void drawNeuralNetwork(){
   
-  float curr_x = network_x;//Base x value for leftmost layer
+  float layer_padding = width/(hidden_layers + 3);
+  float neuron_padding = height/(max(input_size, output_size, neurons_per_layer)+2);
+  float neuron_size = 2000/(neurons_per_layer*(hidden_layers+2));
+  float connection_width = 0.1*neuron_size;
+  
+  float curr_x = layer_padding;//Base x value for leftmost layer
   
   //Draw the connections and calculate neuron positions on screen
   for(Layer l: network.layers){
     
     //Set base y for layer depending on how many neurons there are (centers the layer)
-    float curr_y = network_y - l.neurons.length*(neuron_padding)/2;
+    float curr_y = height/2 - l.neurons.length*(neuron_padding)/2;
     
     //Calculate the position of the neurons (but don't draw them yet since we want them to be on top)
     for(Neuron n: l.neurons){
@@ -157,12 +121,23 @@ void drawNeuralNetwork(){
     }
   }
   
-  //float y_size = 1/(max(neurons_per_layer, input_size, output_size)*neuron_padding);
-  //float x_size = 1/((hidden_layers+2)*layer_padding);
-  
-  //zoom = min(x_size, y_size)*655;
-  
 }
+//Clamps a value between two numbers
+float clamp(float val, float min, float max) {
+  if (val < min) 
+    return min;
+  if (val > max) 
+    return max;
+  return val;
+}
+//////////////////////////////////////////////////
+//TAKE OUT
+void keyPressed() {
+  if (key == 'f'){
+    feed_forward(random_inputs());
+    backprop(new float [] { 1, 0, 0 });
+  }
+}  
 
 //Updates gui with program values
 void update_gui_values(){

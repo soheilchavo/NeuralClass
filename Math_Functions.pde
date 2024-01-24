@@ -48,6 +48,7 @@ float activation_function_prime(float x){
 
 
 //Cost functions
+
 float quadratic_cost(float y, float y_h){
   return pow((y-y_h), 2);
 }

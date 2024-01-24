@@ -8,13 +8,15 @@ class Neuron {
   float z_val; //Value claculated from weights and biases right before it goes into the activation function
   
   float bias; //A sort of y intercept for the activation function
-  float del_bias; //How much the bias will change for each cycle of the chain rule in the output layer
+  ArrayList<Float> del_bias; //Average changes in the bias across the training batch
   
-  ArrayList<Float> average_bias_del; //Average changes in the bias across the training batch
+  float error; //How wrong the neuron is in backprop
+  
   
   float activation_sum; //Sum of previous layer's weighted activations
   
   ArrayList<Connection> connections; //Neurons in the previous layer that are connected to this one
+  ArrayList<Connection> connections_forward; //Neurons in the next layer that are connected to this one
   
   //Physical coords for drawing the neuron
   float x;
@@ -24,24 +26,25 @@ class Neuron {
     this.bias = random(-1, 1);
     this.activation = random(1);
     this.z_val = 0;
-    this.del_bias = 0;
-    this.average_bias_del = new ArrayList<Float>();
+    this.del_bias = new ArrayList<Float>();
+    this.error = 0;
     
     this.activation_sum = 0;
     this.connections = new ArrayList<Connection>();
+    this.connections_forward = new ArrayList<Connection>();
     global_serial += 1;
     this.serial = global_serial;
   }
   
   void update_neuron(){
-    for(float d: this.average_bias_del){
-      this.del_bias += d;
+    float sum = 0;
+    for(float d: this.del_bias){
+      sum += d;
     }
-    this.del_bias /= this.average_bias_del.size();
-    this.bias += del_bias*alpha;
+    sum /= this.del_bias.size();
+    this.bias += sum*alpha;
     this.bias = activation_function(this.bias);
-    this.del_bias = 0;
-    this.average_bias_del = new ArrayList<Float>();
+    this.del_bias = new ArrayList<Float>();
   }
   
   void calculate_activation(){
@@ -50,48 +53,35 @@ class Neuron {
     this.activation_sum = 0;
   }
   
-  void update_del_value(){
-    this.average_bias_del.add(del_bias);
-    this.del_bias = 0;
-  }
-
 }
 
 class Connection{
 
   float weight; //How much effect this connection has to the neuron it's connecting to
-  float del_weight; //How much the weight will change for each cycle of the chain rule in the output layer
   
-  ArrayList<Float> average_weight_del; //Average changes in the weight across the training batch
+  ArrayList<Float> del_weight; //Average changes in the weight across the training batch
   
   Neuron a;
   Neuron b;
   
   Connection(Neuron one, Neuron two, float w){
     this.weight = w;
-    this.del_weight = 0;
-    this.average_weight_del = new ArrayList<Float>();
+    this.del_weight = new ArrayList<Float>();
     
     this.a = one;
     this.b = two;
   }
   
   void update_connection(){
-    this.del_weight = 0;
-    for(float d: this.average_weight_del){
-      this.del_weight += d;
+    float sum = 0;
+    for(float d: this.del_weight){
+      sum += d;
     }
-    this.del_weight /= this.average_weight_del.size();
-    this.weight += del_weight*alpha;
+    sum/= this.del_weight.size();
+    this.weight += sum*alpha;
     this.weight = clamp(this.weight, -1, 1);
     
-    this.del_weight = 0;
-    this.average_weight_del = new ArrayList<Float>();
-  }
-  
-  void update_del_value(){
-    this.average_weight_del.add(del_weight);
-    this.del_weight = 0;
+    this.del_weight = new ArrayList<Float>();
   }
   
 }
@@ -120,6 +110,7 @@ class Layer{
             weight = random(-1,1);
           this.connections[n_0*prev_layer.neurons.length + n_1] = new Connection(prev_layer.neurons[n_1], this.neurons[n_0], weight);
           this.neurons[n_0].connections.add(this.connections[n_0*prev_layer.neurons.length + n_1]);
+          prev_layer.neurons[n_1].connections_forward.add(this.connections[n_0*prev_layer.neurons.length + n_1]);
         }
       }
     }
@@ -132,15 +123,6 @@ class Layer{
     }
     for(Neuron n: neurons){
       n.update_neuron();
-    }
-  }
-  
-  void update_del_values(){
-    for(Connection c: connections){
-      c.update_del_value();
-    }
-    for(Neuron n: neurons){
-      n.update_del_value();
     }
   }
   
@@ -178,12 +160,6 @@ class Network{
   void update_network(){
     for(int l = 1; l < this.layers.length; l++){
       this.layers[l].update_layer();
-    }
-  }
-  
-  void update_del_values(){
-    for(int l = 1; l < this.layers.length; l++){
-      this.layers[l].update_del_values();
     }
   }
   
