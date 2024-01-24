@@ -67,7 +67,7 @@ public void NeuronsBoxChanged(GTextField source, GEvent event) { //_CODE_:Neuron
 } //_CODE_:NeuronsBox:235518:
 
 public void TraningDatasetButtonClicked(GButton source, GEvent event) { //_CODE_:TrainingDatasetButton:551031:
-  println("TrainingDatasetButton - GButton >> GEvent." + event + " @ " + millis());
+  select_training_dataset();
 } //_CODE_:TrainingDatasetButton:551031:
 
 synchronized public void win_draw2(PApplet appc, GWinData data) { //_CODE_:Network_Output:364765:

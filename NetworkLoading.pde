@@ -1,13 +1,14 @@
 void generate_network() {
   network = new Network(input_size, output_size, hidden_layers, neurons_per_layer);
+  redraw();
 }
 
 void save_network() {
-  selectOutput("Create Network file", "networkOutputSelected");
+  selectOutput("Create Network file", "networkOutputSelected", new File(sketchPath() + "/models"));
 }
 
 void load_network() {
-  selectInput("Select Network to load.", "networkSelected");
+  selectInput("Select Network to load.", "networkSelected", new File(sketchPath() + "/models"));
 }
 
 //Makes a .nnf file (Neural Network File, I made it up) and stores network and parameters inside

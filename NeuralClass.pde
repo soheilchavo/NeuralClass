@@ -24,6 +24,7 @@ int loss = 0; //Cost function for backpropogation, index for the list above
 //Dataset variables
 ArrayList<Sample> training_data;
 ArrayList<Sample> testing_data;
+Sample curr_sample;
 String output_mode = "Sample";
 
 //Network visual parameters
@@ -64,6 +65,7 @@ int network_guess;
 void setup(){
   size(700, 700);
   frameRate(18);
+  noLoop();
   
   createGUI();
   update_gui_values();
@@ -155,6 +157,11 @@ void drawNeuralNetwork(){
     }
   }
   
+  float y_size = 1/(max(neurons_per_layer, input_size, output_size)*neuron_padding);
+  float x_size = 1/((hidden_layers+2)*layer_padding);
+  
+  zoom = min(x_size, y_size)*655;
+  
 }
 
 //Updates gui with program values
@@ -167,5 +174,5 @@ void update_gui_values(){
   AlphaBox.setText(str(alpha));
   LayersBox.setText(str(hidden_layers));
   NeuronsBox.setText(str(neurons_per_layer));
-//NetworkGuessLabel.setText("Network Guess: " + output_classes[network_guess]);
+  NetworkGuessLabel.setText("Network Guess: " + output_classes[network_guess]);
 }

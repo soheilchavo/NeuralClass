@@ -43,8 +43,8 @@ void keyPressed() {
     
   //////////////////////////////////////////////////
   //TAKE OUT
-  if (key == 'f'){
-    feed_forward(random_inputs());
-    backprop(new float [] { 1, 0, 0 });
-  }
+  //if (key == 'f'){
+  //  feed_forward(random_inputs());
+  //  backprop(new float [] { 1, 0, 0 });
+  //}
 }  
