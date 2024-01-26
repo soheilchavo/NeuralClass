@@ -31,7 +31,7 @@ public void LossFunctionListChanged(GDropList source, GEvent event) { //_CODE_:L
 } //_CODE_:LossFunctionList:713425:
 
 public void BatchSizeChanged(GTextField source, GEvent event) { //_CODE_:BatchSizeField:735693:
-  batch_size = BatchSizeField.getValueI();
+  batch_size = int(BatchSizeField.getText());
 } //_CODE_:BatchSizeField:735693:
 
 public void RandomizeChanged(GCheckbox source, GEvent event) { //_CODE_:RandomizeBox:490513:
@@ -39,7 +39,7 @@ public void RandomizeChanged(GCheckbox source, GEvent event) { //_CODE_:Randomiz
 } //_CODE_:RandomizeBox:490513:
 
 public void AlphaChanged(GTextField source, GEvent event) { //_CODE_:AlphaBox:380148:
-  alpha = AlphaBox.getValueF();
+  alpha = float(AlphaBox.getText());
 } //_CODE_:AlphaBox:380148:
 
 public void TrainButtonClicked(GButton source, GEvent event) { //_CODE_:TrainButton:677718:

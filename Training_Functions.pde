@@ -54,18 +54,20 @@ void backprop(float[] correct_output){
       
       //Calculate initial error
       if(i == network.layers.length-1)
-        curr_neuron.error = loss_function_single(curr_neuron.activation, correct_output[j]);
+        curr_neuron.error = loss_function_prime_single(curr_neuron.activation, correct_output[j])*activation_function_prime(curr_neuron.z_val);
       
+      //Calculates error for hidden layer neurons
       else{
         for(Connection c: curr_neuron.connections_forward){
-          curr_neuron.error += c.b.error*c.weight;
+          curr_neuron.error *= c.b.error*c.weight;
         }
+        curr_neuron.error *= activation_function_prime(curr_neuron.z_val);
       }
       
-      curr_neuron.del_bias.add(activation_function_prime(curr_neuron.error));
+      curr_neuron.del_bias.add(curr_neuron.error);
       
       for(Connection c: curr_neuron.connections){
-        c.del_weight.add(curr_neuron.error*activation_function_prime(curr_neuron.activation));
+        c.del_weight.add(curr_neuron.error*c.a.activation);
       }
     } 
   }
@@ -91,11 +93,13 @@ void train(float[][] input, float[][] output, int epochs){
         network.update_network();
       }
     }
+    
+    network.update_network();
   }
 }
 
-void print_network_activations(Network n){
-  for(int l = 0; l < n.layers.length; l++){
+void print_network_activations(){
+  for(int l = 0; l < network.layers.length; l++){
     println("\nLayer: " + l);
     for(Neuron neuron: network.layers[l].neurons){
       println(neuron.activation);

@@ -109,9 +109,13 @@ void drawNeuralNetwork(){
       
       //Draw activation text
       String activation_text = str(n.activation); //Convert activation to string
-      
+           
       if(activation_text.length() >= 4){ //Cut off all the decimals
         activation_text = str(n.activation).substring(0,4);
+      }
+      
+      if(n.activation < 0.0099){
+        activation_text = "0.00";
       }
       
       fill(activation_text_colour);
