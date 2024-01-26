@@ -15,6 +15,7 @@ int epochs = 5; //Number of cycles ran on the training data
 int batch_size = 4; //Batch size for training with stochastic gradient descent
 float alpha = 0.2; //Learning step taken in backpropogation
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
+boolean training = false; //If the program is currently training the network
 
 String[] activation_list = new String[] { "Sigmoid", "Inverse Tan", "Relu" };
 String[] loss_list = new String[] { "Linear", "Quadratic"};
@@ -25,7 +26,10 @@ int loss = 0; //Cost function for backpropogation, index for the list above
 ArrayList<Sample> training_data;
 ArrayList<Sample> testing_data;
 Sample curr_sample;
+
 String output_mode = "Sample";
+String output_path = "/";
+boolean black_and_white = true;
 
 //Network visual parameters
 float[] background_col = new float[] {8, 8, 13};
@@ -160,13 +164,6 @@ float clamp(float val, float min, float max) {
   return val;
 }
 //////////////////////////////////////////////////
-//TAKE OUT
-void keyPressed() {
-  if (key == 'f'){
-    feed_forward(random_inputs());
-    backprop(new float [] { 1, 0, 0 });
-  }
-}  
 
 //Updates gui with program values
 void update_gui_values(){

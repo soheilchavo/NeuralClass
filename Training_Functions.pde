@@ -7,6 +7,19 @@ float[] random_inputs(){
   return out;
 }
 
+ArrayList<Sample> shuffle_data(ArrayList<Sample> input_list){
+  
+  ArrayList<Sample> output_list = new ArrayList<Sample>();
+  
+  for(int i = 0; i < input_list.size(); i++){
+    int random_index = int(random(input_list.size()));
+    output_list.add(input_list.get(random_index));
+    input_list.remove(random_index);
+  }
+  
+  return output_list;
+}
+
 //Finds the index of the item in the array through linear search (array is not sorted)
 int index_in_arr(String[] arr, String item){
   for(int i = 0; i < arr.length; i++){
@@ -16,6 +29,11 @@ int index_in_arr(String[] arr, String item){
   }
   println("index_in_arr function could not find item"); //Warning message to prevent future misundestandings
   return 0;
+}
+
+void feed_forward_sample(){
+  training = false;
+  feed_forward(curr_sample.get_pixel_data());
 }
 
 //Feeds a set of data through the network and returns results
@@ -40,11 +58,22 @@ void feed_forward(float[] set){
     if(network_output[i] > network_output[network_guess]){ network_guess = i; }
   }
   
-  update_gui_values(); //Display network guess
+  update_gui_values(); //Displays network guess
 }
   
-void backprop(float[] correct_output){
+void backprop(String correct_class){
  
+  float[] correct_output = new float[output_size];
+
+  for(int i = 0; i < output_size; i++){
+    if(output_classes[i] == correct_class){
+      correct_output[i] = 1;
+    }
+    else{
+      correct_output[i] = 0;
+    }
+  }
+  
   //Go through layers in reverse order, stop before reaching the last one
   for(int i = network.layers.length-1; i > 0; i--){
     //println("Layer:" + i);
@@ -76,25 +105,40 @@ void backprop(float[] correct_output){
   redraw();
 }
 
-void train(float[][] input, float[][] output, int epochs){
+void train(){
 
-  int set_size = ceil((input.length)/batch_size);
+  training = true;
+  int set_size = ceil((training_data.size())/batch_size);
   
   for(int e = 0; e < epochs; e++){
     
-    //Shuffle data
+    training_data = shuffle_data(training_data);
     
-    for(int i = 0; i < input.length; i++){
+    for(int i = 0; i < training_data.size(); i++){
+
+      if(training == false)
+        break;
       
-      feed_forward(input[i]);
-      backprop( output[i]);
+      feed_forward(training_data.get(i).get_pixel_data());
+      backprop(training_data.get(i).type);
       
       if(i % set_size == 0){
         network.update_network();
       }
+      
+      println("Epoch: " + e + ", Sample: " + i + "/" + training_data.size());
     }
+    println("Epoch: " + e + " Complete.");
     
     network.update_network();
+  }
+  
+  if(training == false){
+    println("Stopped Training");
+  }
+  else{
+    println("Training Complete.");
+    training = false;
   }
 }
 

@@ -43,7 +43,17 @@ public void AlphaChanged(GTextField source, GEvent event) { //_CODE_:AlphaBox:38
 } //_CODE_:AlphaBox:380148:
 
 public void TrainButtonClicked(GButton source, GEvent event) { //_CODE_:TrainButton:677718:
-  print("Train Model");
+
+  if(training){
+    TrainButton.setText("Train Network");
+    SelectSample.setLocalColorScheme(5);
+    training = false;
+  }
+  else{
+    TrainButton.setText("Stop Training");
+    SelectSample.setLocalColorScheme(0);
+    thread("train");
+  }
 } //_CODE_:TrainButton:677718:
 
 public void LoadButtonClicked(GButton source, GEvent event) { //_CODE_:LoadButton:544203:
@@ -87,19 +97,25 @@ public void SetButtonClicked(GButton source, GEvent event) { //_CODE_:SetButton:
 } //_CODE_:SetButton:310582:
 
 public void SampleImageHover(GImageButton source, GEvent event) { //_CODE_:SampleImage:939592:
-  println("SampleImage - GImageButton >> GEvent." + event + " @ " + millis());
+  return;
 } //_CODE_:SampleImage:939592:
 
 public void DataSelectClicked(GButton source, GEvent event) { //_CODE_:DataSelectButton:869626:
-  select_testing_dataset();
+  
+  if(output_mode == "Set"){
+    select_testing_dataset();
+  }
+  else{
+    select_sample_data();
+  }
 } //_CODE_:DataSelectButton:869626:
 
 public void FeedForwardButtonClicked(GButton source, GEvent event) { //_CODE_:FeedForwardButton:837957:
-  //feed_forward_data();
+  feed_forward_sample();
 } //_CODE_:FeedForwardButton:837957:
 
 public void OutputDirectoryButtonClicked(GButton source, GEvent event) { //_CODE_:OutputDirectoryButton:259796:
-  //select_output_dir();
+  select_output_folder();
 } //_CODE_:OutputDirectoryButton:259796:
 
 
