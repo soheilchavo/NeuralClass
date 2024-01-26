@@ -52,7 +52,7 @@ public void TrainButtonClicked(GButton source, GEvent event) { //_CODE_:TrainBut
   else{
     TrainButton.setText("Stop Training");
     SelectSample.setLocalColorScheme(0);
-    thread("train");
+    thread("train"); //Starts training model on a new CPU thread
   }
 } //_CODE_:TrainButton:677718:
 

@@ -34,6 +34,8 @@ int index_in_arr(String[] arr, String item){
 void feed_forward_sample(){
   training = false;
   feed_forward(curr_sample.get_pixel_data());
+  update_gui_values();
+  print_network_activations();
 }
 
 //Feeds a set of data through the network and returns results
@@ -112,6 +114,9 @@ void train(){
   
   for(int e = 0; e < epochs; e++){
     
+    if(training == false)
+        break;
+    
     training_data = shuffle_data(training_data);
     
     for(int i = 0; i < training_data.size(); i++){
@@ -133,9 +138,9 @@ void train(){
     network.update_network();
   }
   
-  if(training == false){
+  if(training == false)
     println("Stopped Training");
-  }
+  
   else{
     println("Training Complete.");
     training = false;

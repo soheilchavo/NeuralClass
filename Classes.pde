@@ -12,7 +12,6 @@ class Neuron {
   
   float error; //How wrong the neuron is in backprop
   
-  
   float activation_sum; //Sum of previous layer's weighted activations
   
   ArrayList<Connection> connections; //Neurons in the previous layer that are connected to this one
