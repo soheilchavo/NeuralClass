@@ -13,7 +13,7 @@ int output_size = 3; //Number of classifications of data
 //Network Hyperparameters
 int epochs = 5; //Number of cycles ran on the training data
 int batch_size = 4; //Batch size for training with stochastic gradient descent
-float alpha = 3; //Learning step taken in backpropogation
+float alpha = 0.2; //Learning step taken in backpropogation
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
 
 String[] activation_list = new String[] { "Sigmoid", "Inverse Tan", "Relu" };
@@ -59,6 +59,31 @@ void draw(){
 }
 
 void drawNeuralNetwork(){
+  
+  //Draw some info text if network is too large to display
+  if(max( input_size, hidden_layers, neurons_per_layer ) > 100){
+    fill(255);
+    textAlign(CENTER);
+    textSize(32);
+    float base_height = 220;
+    
+    text("Network is too large to display.", width/2, base_height);
+    text("Input Neurons: " + input_size, width/2, base_height + 48);
+    text("Output Neurons: " + output_size, width/2, base_height + 48*2);
+    text("N/layer: " + neurons_per_layer + ", Hidden layers: " + hidden_layers, width/2, base_height+ 48*3);
+    
+    text("Classes:", width/2, base_height + 48*4);
+    
+    String classes_string = output_classes[0];
+    for(int i = 1; i < output_classes.length; i++){
+      classes_string += ", " + output_classes[i];
+    }
+    
+    textSize(577/classes_string.length());
+    text(classes_string, width/2, base_height + 48*5);
+    
+    return;
+  }
   
   float layer_padding = width/(hidden_layers + 3);
   float neuron_padding = height/(max(input_size, output_size, neurons_per_layer)+2);

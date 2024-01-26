@@ -22,8 +22,11 @@ void training_dataset_selected(File selection){
     training_data = new ArrayList<Sample>();
     
     output_size = selection.listFiles().length;
+    output_classes = new String[output_size]; 
     
-    for(File f: selection.listFiles()){
+    for(int i = 0; i < selection.listFiles().length; i++){
+      File f = selection.listFiles()[i];
+      output_classes[i] = f.getName();
       for(File s: f.listFiles()){
         training_data.add(new Sample(s, f.getName()));
       }
