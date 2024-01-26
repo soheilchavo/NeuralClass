@@ -8,11 +8,11 @@ String network_name = "MyNeuralNetwork"; //Name for saving and loading
 int hidden_layers = 4; //Number of layers between the input and output layers
 int neurons_per_layer = 14; //Number of neurons in hidden layers
 int input_size = 5; //Loaded from dataset, (ex. grayscale image would have 1920*1080 input neurons)
-int output_size = 3; //Number of classifications of data
+int output_size = 2; //Number of classifications of data
 
 //Network Hyperparameters
 int epochs = 5; //Number of cycles ran on the training data
-int batch_size = 4; //Batch size for training with stochastic gradient descent
+int batch_size = 90; //Batch size for training with stochastic gradient descent
 float alpha = 0.2; //Learning step taken in backpropogation
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
 boolean training = false; //If the program is currently training the network
@@ -175,5 +175,5 @@ void update_gui_values(){
   AlphaBox.setText(str(alpha));
   LayersBox.setText(str(hidden_layers));
   NeuronsBox.setText(str(neurons_per_layer));
-  //NetworkGuessLabel.setText("Network Guess: " + output_classes[network_guess]);
+  NetworkGuessLabel.setText("Network Guess: " + output_classes[network_guess]);
 }

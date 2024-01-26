@@ -35,7 +35,7 @@ void feed_forward_sample(){
   training = false;
   feed_forward(curr_sample.get_pixel_data());
   update_gui_values();
-  print_network_activations();
+  print_network_activations(0);
 }
 
 //Feeds a set of data through the network and returns results
@@ -59,8 +59,6 @@ void feed_forward(float[] set){
     network_output[i] = network.layers[network.layers.length-1].neurons[i].activation;
     if(network_output[i] > network_output[network_guess]){ network_guess = i; }
   }
-  
-  update_gui_values(); //Displays network guess
 }
   
 void backprop(String correct_class){
@@ -110,7 +108,6 @@ void backprop(String correct_class){
 void train(){
 
   training = true;
-  int set_size = ceil((training_data.size())/batch_size);
   
   for(int e = 0; e < epochs; e++){
     
@@ -120,16 +117,16 @@ void train(){
     training_data = shuffle_data(training_data);
     
     for(int i = 0; i < training_data.size(); i++){
-
+      
       if(training == false)
         break;
       
       feed_forward(training_data.get(i).get_pixel_data());
-      backprop(training_data.get(i).type);
+      //backprop(training_data.get(i).type);
       
-      if(i % set_size == 0){
-        network.update_network();
-      }
+      //if(i % batch_size == 0){
+      //  network.update_network();
+      //}
       
       println("Epoch: " + e + ", Sample: " + i + "/" + training_data.size());
     }
@@ -147,11 +144,14 @@ void train(){
   }
 }
 
-void print_network_activations(){
-  for(int l = 0; l < network.layers.length; l++){
-    println("\nLayer: " + l);
-    for(Neuron neuron: network.layers[l].neurons){
-      println(neuron.activation);
-    }
+void print_network_activations(int layer){
+  for(Neuron neuron: network.layers[layer].neurons){
+    println(neuron.activation);
+  }
+}
+
+void print_network_weights(int layer){
+  for(Connection c: network.layers[layer].connections){
+    println(c.weight);
   }
 }
