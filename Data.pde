@@ -20,7 +20,7 @@ class Sample{
       float[] output_pixels = new float[image.pixels.length];
       
       for(int i = 0; i < image.pixels.length; i++){
-        output_pixels[i] = activation_function((red(image.pixels[i]) + green(image.pixels[i]) + blue(image.pixels[i]))/3);
+        output_pixels[i] = image.pixels[i];
       }
       return output_pixels;
     }

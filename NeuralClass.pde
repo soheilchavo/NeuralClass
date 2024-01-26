@@ -1,6 +1,14 @@
 //Neural Class
 //Created by: Soheil Chavoshi, Jan. 29th, 2024
 
+//Instructions for use:
+//
+//1. Load a network from the "models" folder, or generate one
+//
+//2. Load the equivilent data from the "data" folder
+//
+//3. Press "Feedforward" and see the generated guess
+
 import g4p_controls.*;
 
 //Network Parameters
