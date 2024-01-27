@@ -10,7 +10,7 @@ class Neuron {
   float bias; //A sort of y intercept for the activation function
   ArrayList<Float> del_bias; //Average changes in the bias across the training batch
   
-  float error; //How wrong the neuron is in backprop
+  float delta; //How wrong the neuron is in backprop
   
   float activation_sum; //Sum of previous layer's weighted activations
   
@@ -26,7 +26,7 @@ class Neuron {
     this.activation = random(1);
     this.z_val = 0;
     this.del_bias = new ArrayList<Float>();
-    this.error = 0;
+    this.delta = 1;
     
     this.activation_sum = 0;
     this.connections = new ArrayList<Connection>();
@@ -36,13 +36,9 @@ class Neuron {
   }
   
   void update_neuron(){
-    float sum = 0;
-    for(float d: this.del_bias){
-      sum += d;
-    }
-    sum /= this.del_bias.size();
-    this.bias += sum*alpha;
-    this.bias = activation_function(this.bias);
+    for(float d: this.del_bias)
+      this.bias -= (alpha/batch_size)*d;
+    
     this.del_bias = new ArrayList<Float>();
   }
   
@@ -58,6 +54,7 @@ class Neuron {
 class Connection{
 
   float weight; //How much effect this connection has to the neuron it's connecting to
+  float delta;
   
   ArrayList<Float> del_weight; //Average changes in the weight across the training batch
   
@@ -66,20 +63,17 @@ class Connection{
   
   Connection(Neuron one, Neuron two, float w){
     this.weight = w;
+    this.delta = 0;
     this.del_weight = new ArrayList<Float>();
-    
+      
     this.a = one;
     this.b = two;
   }
   
   void update_connection(){
-    float sum = 0;
-    for(float d: this.del_weight){
-      sum += d;
-    }
-    sum/= this.del_weight.size();
-    this.weight += sum*alpha;
-    this.weight = clamp(this.weight, -1, 1);
+    
+    for(float d: this.del_weight)
+      this.weight -= (alpha/batch_size)*d;
     
     this.del_weight = new ArrayList<Float>();
   }

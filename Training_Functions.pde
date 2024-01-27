@@ -35,7 +35,6 @@ void feed_forward_sample() {
   training = false;
   feed_forward(curr_sample.get_pixel_data());
   update_gui_values();
-  print_network_activations(0);
 }
 
 //Feeds a set of data through the network and returns results
@@ -69,49 +68,49 @@ void backprop(String correct_class) {
   float[] correct_output = new float[output_size];
 
   for (int i = 0; i < output_size; i++) {
-    if (output_classes[i] == correct_class) {
+    if (output_classes[i].equals(correct_class)) {
       correct_output[i] = 1;
     } else {
       correct_output[i] = 0;
     }
   }
 
+  //float cost = loss_function(network.get_layer_activation(network.layers.length-1), correct_output);
+
   //Go through layers in reverse order, stop before reaching the last one
   for (int i = network.layers.length-1; i > 0; i--) {
-    //println("Layer:" + i);
+    
     //Go through all neurons in the layer
     for (int j = 0; j < network.layers[i].neurons.length; j++) {
       Neuron curr_neuron = network.layers[i].neurons[j];
-
-      //Calculate initial error
-      if (i == network.layers.length-1)
-        curr_neuron.error = loss_function_prime_single(curr_neuron.activation, correct_output[j])*activation_function_prime(curr_neuron.z_val);
-        
-      //Calculates error for hidden layer neurons
-      else {
-        for (Connection c : curr_neuron.connections_forward) {
-          curr_neuron.error *= c.b.error*c.weight;
-        }
-        curr_neuron.error *= activation_function_prime(curr_neuron.z_val);
+      //Calculate delta for last layer's weights and biases
+      if(i == network.layers.length-1){
+        curr_neuron.delta = loss_function_prime_single(curr_neuron.activation, correct_output[j])*activation_function_prime(curr_neuron.z_val);
+        curr_neuron.del_bias.add(curr_neuron.delta);
       }
-
-      curr_neuron.del_bias.add(curr_neuron.error);
-
-      for (Connection c : curr_neuron.connections) {
-        c.del_weight.add(curr_neuron.error*c.a.activation);
+      else{
+        curr_neuron.delta = activation_function_prime(curr_neuron.z_val);
+        for(Connection c: curr_neuron.connections_forward)
+          curr_neuron.delta *= c.weight*c.b.delta;
+        curr_neuron.del_bias.add(curr_neuron.delta);
+      }
+    
+      for(Connection c: curr_neuron.connections){
+        c.delta = c.a.activation*curr_neuron.delta;
+        c.del_weight.add(c.delta);
       }
     }
   }
 
   redraw();  
-  print_network_activations(network.layers.length-1);
+  //print_network_activations(network.layers.length-1);
 }
 
 void train() {
 
   training = true;
 
-  for (int e = 0; e < epochs; e++) {
+  for (int e = 1; e < epochs+1; e++) {
 
     if (training == false)
       break;
@@ -119,19 +118,18 @@ void train() {
     training_data = shuffle_data(training_data);
 
     for (int i = 0; i < training_data.size(); i++) {
+      
+      println("Epoch: " + e + ", Sample: " + int(i+1) + "/" + training_data.size());
 
       feed_forward(training_data.get(i).get_pixel_data());
       backprop(training_data.get(i).type);
 
-      if (i % batch_size == 0) {
-        println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+      if (int(i+1) % batch_size == 0)
         network.update_network();
-      }
-
+      
       if (training == false)
         break;
 
-      println("Epoch: " + e + ", Sample: " + i + "/" + training_data.size());
     }
     
     network.update_network();

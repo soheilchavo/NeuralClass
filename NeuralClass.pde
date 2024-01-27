@@ -20,13 +20,13 @@ int output_size = 2; //Number of classifications of data
 
 //Network Hyperparameters
 int epochs = 5; //Number of cycles ran on the training data
-int batch_size = 3; //Batch size for training with stochastic gradient descent
+int batch_size = 10; //Batch size for training with stochastic gradient descent
 float alpha = 0.2; //Learning step taken in backpropogation
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
 boolean training = false; //If the program is currently training the network
 
 String[] activation_list = new String[] { "Sigmoid", "Inverse Tan", "Relu" };
-String[] loss_list = new String[] { "Linear", "Quadratic"};
+String[] loss_list = new String[] { "Quadratic", "Linear"};
 int activation = 0; //Normalization function for neuron activation, index for the list above
 int loss = 0; //Cost function for backpropogation, index for the list above
 
@@ -51,7 +51,7 @@ float neuron_bright_offset = 40;
 color activation_text_colour = color(0, 0, 0);
 
 Network network = null; //Main Network for the program
-String[] output_classes = new String[] { "Toopy", "Bynoo" };
+String[] output_classes = new String[] { "Toopy", "Binoo" };
 float[] network_output;
 int network_guess;
 
@@ -59,6 +59,8 @@ void setup(){
   size(700, 700);
   frameRate(18);
   noLoop();
+  
+  //select_training_dataset();
   
   createGUI();
   update_gui_values();

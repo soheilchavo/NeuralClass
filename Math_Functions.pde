@@ -68,9 +68,9 @@ float linear_cost_prime(float y, float y_h){
 }
 
 float loss_function_single(float y, float y_h){
-  if(activation == index_in_arr(loss_list, "Quadratic"))
+  if(loss == index_in_arr(loss_list, "Quadratic"))
     return quadratic_cost(y, y_h);
-  if(activation == index_in_arr(loss_list, "Linear"))
+  if(loss == index_in_arr(loss_list, "Linear"))
     return linear_cost(y, y_h);
    return 0;
 }
