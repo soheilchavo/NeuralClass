@@ -20,7 +20,7 @@ class Sample{
       float[] output_pixels = new float[image.pixels.length];
       
       for(int i = 0; i < image.pixels.length; i++){
-        output_pixels[i] = image.pixels[i];
+        output_pixels[i] = brightness(image.pixels[i])/255;
       }
       return output_pixels;
     }

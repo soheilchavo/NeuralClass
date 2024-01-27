@@ -20,7 +20,7 @@ int output_size = 2; //Number of classifications of data
 
 //Network Hyperparameters
 int epochs = 5; //Number of cycles ran on the training data
-int batch_size = 90; //Batch size for training with stochastic gradient descent
+int batch_size = 3; //Batch size for training with stochastic gradient descent
 float alpha = 0.2; //Learning step taken in backpropogation
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
 boolean training = false; //If the program is currently training the network
@@ -76,10 +76,10 @@ void drawNeuralNetwork(){
   if(max( input_size, hidden_layers, neurons_per_layer ) > 100){
     fill(255);
     textAlign(CENTER);
-    textSize(32);
+    textSize(25);
     float base_height = 220;
     
-    text("Network is too large to display.", width/2, base_height);
+    text("Network is too large to display. (More than 100 layers or neurons)", width/2, base_height);
     text("Input Neurons: " + input_size, width/2, base_height + 48);
     text("Output Neurons: " + output_size, width/2, base_height + 48*2);
     text("N/layer: " + neurons_per_layer + ", Hidden layers: " + hidden_layers, width/2, base_height+ 48*3);
@@ -91,7 +91,7 @@ void drawNeuralNetwork(){
       classes_string += ", " + output_classes[i];
     }
     
-    textSize(577/classes_string.length());
+    textSize(633/classes_string.length());
     text(classes_string, width/2, base_height + 48*5);
     
     return;

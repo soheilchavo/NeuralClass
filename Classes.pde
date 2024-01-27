@@ -47,6 +47,7 @@ class Neuron {
   }
   
   void calculate_activation(){
+    //println(this.activation_sum, this.bias);
     this.z_val = this.activation_sum+this.bias;
     this.activation = activation_function(this.z_val);
     this.activation_sum = 0;
