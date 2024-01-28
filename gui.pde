@@ -31,7 +31,7 @@ public void LossFunctionListChanged(GDropList source, GEvent event) { //_CODE_:L
 } //_CODE_:LossFunctionList:713425:
 
 public void BatchSizeChanged(GTextField source, GEvent event) { //_CODE_:BatchSizeField:735693:
-  batch_size = int(BatchSizeField.getText());
+  batch_size = min(12, int(BatchSizeField.getText()));
 } //_CODE_:BatchSizeField:735693:
 
 public void RandomizeChanged(GCheckbox source, GEvent event) { //_CODE_:RandomizeBox:490513:
@@ -39,7 +39,7 @@ public void RandomizeChanged(GCheckbox source, GEvent event) { //_CODE_:Randomiz
 } //_CODE_:RandomizeBox:490513:
 
 public void AlphaChanged(GTextField source, GEvent event) { //_CODE_:AlphaBox:380148:
-  alpha = float(AlphaBox.getText());
+  alpha = clamp(float(AlphaBox.getText()), 0.01, 0.5);
 } //_CODE_:AlphaBox:380148:
 
 public void TrainButtonClicked(GButton source, GEvent event) { //_CODE_:TrainButton:677718:
@@ -52,7 +52,8 @@ public void TrainButtonClicked(GButton source, GEvent event) { //_CODE_:TrainBut
   else{
     TrainButton.setText("Stop Training");
     SelectSample.setLocalColorScheme(0);
-    thread("train"); //Starts training model on a new CPU thread
+    //thread("train"); //Starts training model on a new CPU thread
+    train();
   }
 } //_CODE_:TrainButton:677718:
 
@@ -78,6 +79,7 @@ public void NeuronsBoxChanged(GTextField source, GEvent event) { //_CODE_:Neuron
 
 public void TraningDatasetButtonClicked(GButton source, GEvent event) { //_CODE_:TrainingDatasetButton:551031:
   select_training_dataset();
+  update_gui_values();
 } //_CODE_:TrainingDatasetButton:551031:
 
 synchronized public void win_draw2(PApplet appc, GWinData data) { //_CODE_:Network_Output:364765:
@@ -96,10 +98,6 @@ public void SetButtonClicked(GButton source, GEvent event) { //_CODE_:SetButton:
   SelectSample.setLocalColorScheme(0);
 } //_CODE_:SetButton:310582:
 
-public void SampleImageHover(GImageButton source, GEvent event) { //_CODE_:SampleImage:939592:
-  return;
-} //_CODE_:SampleImage:939592:
-
 public void DataSelectClicked(GButton source, GEvent event) { //_CODE_:DataSelectButton:869626:
   
   if(output_mode == "Set"){
@@ -107,6 +105,7 @@ public void DataSelectClicked(GButton source, GEvent event) { //_CODE_:DataSelec
   }
   else{
     select_sample_data();
+    update_gui_values();
   }
 } //_CODE_:DataSelectButton:869626:
 
@@ -233,28 +232,32 @@ public void createGUI(){
   SetButton.setText("Set");
   SetButton.setLocalColorScheme(GCScheme.RED_SCHEME);
   SetButton.addEventHandler(this, "SetButtonClicked");
-  SampleImage = new GImageButton(Network_Output, 80, 130, 140, 130, new String[] { "6.png", "6.png", "6.png" } );
-  SampleImage.addEventHandler(this, "SampleImageHover");
-  DataPreviewLabel = new GLabel(Network_Output, 110, 100, 80, 20);
-  DataPreviewLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
-  DataPreviewLabel.setText("Data Preview");
-  DataPreviewLabel.setOpaque(false);
   DataSelectButton = new GButton(Network_Output, 20, 60, 120, 30);
   DataSelectButton.setText("Select Data");
   DataSelectButton.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   DataSelectButton.addEventHandler(this, "DataSelectClicked");
-  FeedForwardButton = new GButton(Network_Output, 100, 270, 110, 30);
-  FeedForwardButton.setText("Feed Forward");
+  FeedForwardButton = new GButton(Network_Output, 60, 180, 180, 40);
+  FeedForwardButton.setText("Feed Forward Data");
   FeedForwardButton.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   FeedForwardButton.addEventHandler(this, "FeedForwardButtonClicked");
-  NetworkGuessLabel = new GLabel(Network_Output, -10, 310, 310, 20);
+  NetworkGuessLabel = new GLabel(Network_Output, -10, 220, 310, 20);
   NetworkGuessLabel.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
-  NetworkGuessLabel.setText("Network Guess: None");
+  NetworkGuessLabel.setText("Network Guess:");
   NetworkGuessLabel.setOpaque(false);
   OutputDirectoryButton = new GButton(Network_Output, 150, 60, 130, 30);
   OutputDirectoryButton.setText("Select Output Directory");
   OutputDirectoryButton.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   OutputDirectoryButton.addEventHandler(this, "OutputDirectoryButtonClicked");
+  DataLabel = new GLabel(Network_Output, 0, 100, 300, 70);
+  DataLabel.setIcon("6.png", 1, GAlign.SOUTH, GAlign.CENTER, GAlign.MIDDLE);
+  DataLabel.setTextAlign(GAlign.CENTER, GAlign.TOP);
+  DataLabel.setText("Data Not Loaded");
+  DataLabel.setLocalColorScheme(GCScheme.CYAN_SCHEME);
+  DataLabel.setOpaque(false);
+  NetworkOutputLabel = new GLabel(Network_Output, 60, 240, 180, 160);
+  NetworkOutputLabel.setTextAlign(GAlign.CENTER, GAlign.TOP);
+  NetworkOutputLabel.setText("No Output");
+  NetworkOutputLabel.setOpaque(false);
   Parameters_Window.loop();
   Network_Output.loop();
 }
@@ -289,9 +292,9 @@ GWindow Network_Output;
 GLabel OutputLabel; 
 GButton SelectSample; 
 GButton SetButton; 
-GImageButton SampleImage; 
-GLabel DataPreviewLabel; 
 GButton DataSelectButton; 
 GButton FeedForwardButton; 
 GLabel NetworkGuessLabel; 
 GButton OutputDirectoryButton; 
+GLabel DataLabel; 
+GLabel NetworkOutputLabel; 

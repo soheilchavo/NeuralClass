@@ -11,6 +11,18 @@ void load_network() {
   selectInput("Select Network to load.", "networkSelected", new File(sketchPath() + "/models"));
 }
 
+String formatted_list(String[] list){
+  
+  String out = list[0];
+  
+  for(int i = 1; i < list.length; i++){
+    out += ", " + list[i];
+  }
+  
+  return out;
+  
+}
+
 //Makes a .nnf file (Neural Network File, I made it up) and stores network and parameters inside
 void networkOutputSelected(File selection) {
   String ext = ".nnf";
@@ -33,6 +45,7 @@ void networkOutputSelected(File selection) {
     output.println("Activation=" + activation);
     output.println("Cost=" + loss);
     output.println("Randomized=" + randomize_weight_and_bias);
+    output.println("OutputClasses=" + formatted_list(output_classes));
 
     output.println("#Data"); //Write all neurons and connections to the file
 
@@ -100,7 +113,6 @@ void networkOutputSelected(File selection) {
   println("Saved " + selection.getName() + " Successfully.");
 }
 
-
 void networkSelected(File selection) {
 
   println("Loading " + selection.getName());
@@ -166,6 +178,9 @@ void networkSelected(File selection) {
           else if(param.contains("Randomized"))
             randomize_weight_and_bias = boolean(val);
             
+          else if(param.contains("OutputClasses"))
+            output_classes = val.split(",");
+            
         } 
         else if (current_tag.contains("#Data")) {
 
@@ -196,15 +211,16 @@ void networkSelected(File selection) {
 
               neuron.connections = new ArrayList<Connection>(); //initialize connected neurons list
 
-              for (int i = 1; i < serial_str.length(); i++) { //Load every connection in previous layer
-                neuron.connections.add(network.find_connection_by_serial(neuron.serial, int(serial_str.charAt(i)), curr_layer));
+              if(curr_layer > 0){//Load every connection in previous layer
+                for (int i = 1; i < serial_str.length(); i++) { 
+                  neuron.connections.add(network.find_connection_by_serial(neuron.serial, int(serial_str.charAt(i)), curr_layer));
+                }
               }
-
               curr_neuron += 1;
             }
+            
+            else{
 
-            //Load all connections
-            else if (curr_layer > 0) {
               Connection c = network.layers[curr_layer].connections[curr_connection];
 
               c.weight = float(period_splits[0].substring(period_splits[0].indexOf('=')+1));

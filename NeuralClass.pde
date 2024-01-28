@@ -19,9 +19,9 @@ int input_size = 5; //Loaded from dataset, (ex. grayscale image would have 1920*
 int output_size = 2; //Number of classifications of data
 
 //Network Hyperparameters
-int epochs = 5; //Number of cycles ran on the training data
-int batch_size = 10; //Batch size for training with stochastic gradient descent
-float alpha = 0.2; //Learning step taken in backpropogation
+int epochs = 2; //Number of cycles ran on the training data
+int batch_size = 25; //Batch size for training with stochastic gradient descent
+float alpha = 0.4; //Learning step taken in backpropogation
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
 boolean training = false; //If the program is currently training the network
 
@@ -33,6 +33,8 @@ int loss = 0; //Cost function for backpropogation, index for the list above
 //Dataset variables
 ArrayList<Sample> training_data;
 ArrayList<Sample> testing_data;
+String testing_data_path = "";
+
 Sample curr_sample;
 
 String output_mode = "Sample";
@@ -55,6 +57,8 @@ String[] output_classes = new String[] { "Toopy", "Binoo" };
 float[] network_output;
 int network_guess;
 
+boolean draw_network_backprop = true;
+
 void setup(){
   size(700, 700);
   frameRate(18);
@@ -70,15 +74,18 @@ void setup(){
 void draw(){
   background(background_col[0], background_col[1], background_col[2]); //Draw Background
   drawNeuralNetwork();
+  update_gui_values();
 }
 
 void drawNeuralNetwork(){
   
   //Draw some info text if network is too large to display
   if(max( input_size, hidden_layers, neurons_per_layer ) > 100){
+    draw_network_backprop = false;
+    
     fill(255);
     textAlign(CENTER);
-    textSize(25);
+    textSize(17);
     float base_height = 220;
     
     text("Network is too large to display. (More than 100 layers or neurons)", width/2, base_height);
@@ -185,5 +192,21 @@ void update_gui_values(){
   AlphaBox.setText(str(alpha));
   LayersBox.setText(str(hidden_layers));
   NeuronsBox.setText(str(neurons_per_layer));
-  NetworkGuessLabel.setText("Network Guess: " + output_classes[network_guess]);
+  
+  String data_text = "Data Not Loaded";
+  
+  try{
+    if(output_mode == "Sample" && curr_sample != null){
+      data_text = curr_sample.image_file.getCanonicalPath();
+      DataLabel.setIcon(curr_sample.image_file.getCanonicalPath(), 1);
+    }
+    else if(testing_data_path != "")
+      data_text = testing_data_path;
+  }  
+  catch(Exception e){}
+  
+  DataLabel.setText(data_text);
+  
+  if(network != null)
+    NetworkOutputLabel.setText(get_network_outputs());
 }

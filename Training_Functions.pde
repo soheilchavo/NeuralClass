@@ -74,15 +74,13 @@ void backprop(String correct_class) {
       correct_output[i] = 0;
     }
   }
-
-  //float cost = loss_function(network.get_layer_activation(network.layers.length-1), correct_output);
-
+  
   //Go through layers in reverse order, stop before reaching the last one
   for (int i = network.layers.length-1; i > 0; i--) {
-    
     //Go through all neurons in the layer
     for (int j = 0; j < network.layers[i].neurons.length; j++) {
       Neuron curr_neuron = network.layers[i].neurons[j];
+      
       //Calculate delta for last layer's weights and biases
       if(i == network.layers.length-1){
         curr_neuron.delta = loss_function_prime_single(curr_neuron.activation, correct_output[j])*activation_function_prime(curr_neuron.z_val);
@@ -92,6 +90,7 @@ void backprop(String correct_class) {
         curr_neuron.delta = activation_function_prime(curr_neuron.z_val);
         for(Connection c: curr_neuron.connections_forward)
           curr_neuron.delta *= c.weight*c.b.delta;
+        
         curr_neuron.del_bias.add(curr_neuron.delta);
       }
     
@@ -101,16 +100,19 @@ void backprop(String correct_class) {
       }
     }
   }
-
-  redraw();  
-  //print_network_activations(network.layers.length-1);
+  if(draw_network_backprop)
+    redraw();  
 }
 
 void train() {
 
   training = true;
+  int batch = 0;
+  int n_batches = int(training_data.size()/batch_size);
 
   for (int e = 1; e < epochs+1; e++) {
+    
+    println("Epoch: " + e + " Started");
 
     if (training == false)
       break;
@@ -119,13 +121,14 @@ void train() {
 
     for (int i = 0; i < training_data.size(); i++) {
       
-      println("Epoch: " + e + ", Sample: " + int(i+1) + "/" + training_data.size());
-
       feed_forward(training_data.get(i).get_pixel_data());
       backprop(training_data.get(i).type);
-
-      if (int(i+1) % batch_size == 0)
+      
+      if (int(i+1) % batch_size == 0){
+        batch += 1;
+        println("Epoch: " + e + ", Batch: " + batch + "/" + n_batches);
         network.update_network();
+      }
       
       if (training == false)
         break;
@@ -163,4 +166,31 @@ void print_network_dels(int layer) {
   for (Connection c : network.layers[layer].connections) {
     println(c.del_weight);
   }
+}
+
+String get_network_outputs(){
+  
+  try{
+    String[][] activations = new String[output_size][2];
+    
+    for(int i = 0; i < output_size; i++)
+      activations[i] = new String[] { output_classes[i], str(network.layers[network.layers.length-1].neurons[i].activation) };
+    
+    
+    for(int i = 0; i < output_size; i++){
+      int k = i;
+      while(k > 0 && float(activations[k][1]) > float(activations[k-1][1])){
+        String[] prev_string = activations[k-1];
+        activations[k-1] = activations[k];
+        activations[k] = prev_string;
+      }
+    }
+    
+    String out = "";
+    for(int i = 0; i < output_size; i++)
+      out += activations[i][0] + ", " + activations[i][1] + " Activation\n";
+    //.substring(0,min(4, activations[i][1].length()))
+    return out;
+  }
+  catch(Exception e){ return ""; }
 }
