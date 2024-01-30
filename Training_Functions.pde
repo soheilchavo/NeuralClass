@@ -35,6 +35,7 @@ void feed_forward_sample() {
   training = false;
   feed_forward(curr_sample.get_pixel_data());
   update_gui_values();
+  NetworkOutputLabel.setText(get_network_outputs());
 }
 
 //Feeds a set of data through the network and returns results
@@ -52,13 +53,15 @@ void feed_forward(float[] set) {
 
   //Set network outputs to output layer
   network_output = new float[output_size];
-  network_guess = 0;
+  network_guesses = new int[network_guesses.length];
 
   for (int i = 0; i < output_size; i++) {
     network_output[i] = network.layers[network.layers.length-1].neurons[i].activation;
-
-    if (network_output[i] > network_output[network_guess]) {
-      network_guess = i;
+    for(int g = 0; g < network_guesses.length; g++){
+      if(network_output[network_guesses[g]] < network_output[i]){
+        network_guesses[g] = i;
+        break;
+      }
     }
   }
 }
@@ -150,6 +153,10 @@ void train() {
   }
 }
 
+String float_as_truncated_str(float a, int b){
+  return str(a).substring(0, min(b, str(a).length()));
+}
+
 void print_network_activations(int layer) {
   for (Neuron neuron : network.layers[layer].neurons) {
     println(neuron.activation);
@@ -171,26 +178,21 @@ void print_network_dels(int layer) {
 String get_network_outputs(){
   
   try{
-    String[][] activations = new String[output_size][2];
-    
-    for(int i = 0; i < output_size; i++)
-      activations[i] = new String[] { output_classes[i], str(network.layers[network.layers.length-1].neurons[i].activation) };
-    
-    
-    for(int i = 0; i < output_size; i++){
-      int k = i;
-      while(k > 0 && float(activations[k][1]) > float(activations[k-1][1])){
-        String[] prev_string = activations[k-1];
-        activations[k-1] = activations[k];
-        activations[k] = prev_string;
-      }
-    }
     
     String out = "";
-    for(int i = 0; i < output_size; i++)
-      out += activations[i][0] + ", " + activations[i][1] + " Activation\n";
-    //.substring(0,min(4, activations[i][1].length()))
+    
+    float[] activation_list = new float[network_guesses.length];
+    for(int i = 0; i < network_guesses.length; i++){
+      activation_list[i] = network_output[network_guesses[i]];
+    }
+    
+    float sum = array_sum(activation_list);
+    
+    for(int i = 0; i < 3; i++){
+      out += output_classes[network_guesses[i]] + "  -   " + float_as_truncated_str(100*activation_list[i]/sum, 4) + "% Confidence\n";
+    }
+    
     return out;
   }
-  catch(Exception e){ return ""; }
+  catch(Exception e){ return "No Output."; }
 }

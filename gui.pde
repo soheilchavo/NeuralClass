@@ -19,7 +19,7 @@ synchronized public void win_draw1(PApplet appc, GWinData data) { //_CODE_:Param
 } //_CODE_:Parameters_Window:437002:
 
 public void EpochFieldChagned(GTextField source, GEvent event) { //_CODE_:EpochField:826180:
-  epochs = int(EpochField.getText());
+  epochs = int(clamp(int(EpochField.getText()), 1, 8));
 } //_CODE_:EpochField:826180:
 
 public void ActivationListChanged(GDropList source, GEvent event) { //_CODE_:ActivationList:754752:
@@ -31,7 +31,7 @@ public void LossFunctionListChanged(GDropList source, GEvent event) { //_CODE_:L
 } //_CODE_:LossFunctionList:713425:
 
 public void BatchSizeChanged(GTextField source, GEvent event) { //_CODE_:BatchSizeField:735693:
-  batch_size = min(12, int(BatchSizeField.getText()));
+  batch_size = int(clamp(int(BatchSizeField.getText()), 1, 12));
 } //_CODE_:BatchSizeField:735693:
 
 public void RandomizeChanged(GCheckbox source, GEvent event) { //_CODE_:RandomizeBox:490513:
@@ -39,7 +39,7 @@ public void RandomizeChanged(GCheckbox source, GEvent event) { //_CODE_:Randomiz
 } //_CODE_:RandomizeBox:490513:
 
 public void AlphaChanged(GTextField source, GEvent event) { //_CODE_:AlphaBox:380148:
-  alpha = clamp(float(AlphaBox.getText()), 0.01, 0.5);
+  alpha = clamp(float(AlphaBox.getText()), 0.01, 2);
 } //_CODE_:AlphaBox:380148:
 
 public void TrainButtonClicked(GButton source, GEvent event) { //_CODE_:TrainButton:677718:
@@ -52,8 +52,7 @@ public void TrainButtonClicked(GButton source, GEvent event) { //_CODE_:TrainBut
   else{
     TrainButton.setText("Stop Training");
     SelectSample.setLocalColorScheme(0);
-    //thread("train"); //Starts training model on a new CPU thread
-    train();
+    thread("train"); //Starts training model on a new CPU thread
   }
 } //_CODE_:TrainButton:677718:
 
@@ -70,11 +69,11 @@ public void GenerateButtonClicked(GButton source, GEvent event) { //_CODE_:Gener
 } //_CODE_:GenerateButton:224937:
 
 public void LayersBoxChanged(GTextField source, GEvent event) { //_CODE_:LayersBox:264288:
-  hidden_layers = int(LayersBox.getText());
+  hidden_layers = int(clamp(int(LayersBox.getText()),1,10000));
 } //_CODE_:LayersBox:264288:
 
 public void NeuronsBoxChanged(GTextField source, GEvent event) { //_CODE_:NeuronsBox:235518:
-  neurons_per_layer = int(NeuronsBox.getText());
+  neurons_per_layer = int(clamp(int(NeuronsBox.getText()),1,10000));
 } //_CODE_:NeuronsBox:235518:
 
 public void TraningDatasetButtonClicked(GButton source, GEvent event) { //_CODE_:TrainingDatasetButton:551031:
@@ -135,30 +134,30 @@ public void createGUI(){
   Hyper_Paramters_Label.setText("Hyper Paramters");
   Hyper_Paramters_Label.setLocalColorScheme(GCScheme.RED_SCHEME);
   Hyper_Paramters_Label.setOpaque(false);
-  Epoch_Label = new GLabel(Parameters_Window, 20, 250, 100, 20);
-  Epoch_Label.setText("Epochs");
+  Epoch_Label = new GLabel(Parameters_Window, 10, 250, 110, 20);
+  Epoch_Label.setText("Epochs (1-8)");
   Epoch_Label.setOpaque(true);
-  EpochField = new GTextField(Parameters_Window, 130, 250, 110, 19, G4P.SCROLLBARS_NONE);
+  EpochField = new GTextField(Parameters_Window, 130, 250, 120, 19, G4P.SCROLLBARS_NONE);
   EpochField.setText("5");
   EpochField.setPromptText("(Numbers Only)");
   EpochField.setOpaque(true);
   EpochField.addEventHandler(this, "EpochFieldChagned");
-  Activation_label = new GLabel(Parameters_Window, 20, 280, 100, 20);
-  Activation_label.setText("Activation");
+  Activation_label = new GLabel(Parameters_Window, 10, 280, 110, 20);
+  Activation_label.setText("Activation Function");
   Activation_label.setOpaque(true);
-  ActivationList = new GDropList(Parameters_Window, 130, 280, 110, 80, 3, 10);
+  ActivationList = new GDropList(Parameters_Window, 130, 280, 120, 80, 3, 10);
   ActivationList.setItems(loadStrings("list_754752"), 0);
   ActivationList.addEventHandler(this, "ActivationListChanged");
-  CostLabel = new GLabel(Parameters_Window, 20, 310, 100, 20);
-  CostLabel.setText("Loss");
+  CostLabel = new GLabel(Parameters_Window, 10, 310, 110, 20);
+  CostLabel.setText("Cost Function");
   CostLabel.setOpaque(true);
-  LossFunctionList = new GDropList(Parameters_Window, 130, 310, 110, 66, 2, 10);
+  LossFunctionList = new GDropList(Parameters_Window, 130, 310, 120, 66, 2, 10);
   LossFunctionList.setItems(loadStrings("list_713425"), 0);
   LossFunctionList.addEventHandler(this, "LossFunctionListChanged");
-  BatchSizeLabel = new GLabel(Parameters_Window, 20, 340, 100, 20);
-  BatchSizeLabel.setText("Batch-Size");
+  BatchSizeLabel = new GLabel(Parameters_Window, 10, 340, 110, 20);
+  BatchSizeLabel.setText("Batch-Size (1-12)");
   BatchSizeLabel.setOpaque(true);
-  BatchSizeField = new GTextField(Parameters_Window, 130, 340, 110, 22, G4P.SCROLLBARS_NONE);
+  BatchSizeField = new GTextField(Parameters_Window, 130, 340, 120, 22, G4P.SCROLLBARS_NONE);
   BatchSizeField.setText("5");
   BatchSizeField.setOpaque(true);
   BatchSizeField.addEventHandler(this, "BatchSizeChanged");
@@ -168,22 +167,22 @@ public void createGUI(){
   RandomizeBox.setOpaque(false);
   RandomizeBox.addEventHandler(this, "RandomizeChanged");
   RandomizeBox.setSelected(true);
-  AlphaLable = new GLabel(Parameters_Window, 20, 370, 100, 20);
-  AlphaLable.setText("Alpha");
+  AlphaLable = new GLabel(Parameters_Window, 10, 370, 110, 20);
+  AlphaLable.setText("Alpha (0.01-2)");
   AlphaLable.setOpaque(true);
-  AlphaBox = new GTextField(Parameters_Window, 130, 370, 110, 22, G4P.SCROLLBARS_NONE);
+  AlphaBox = new GTextField(Parameters_Window, 130, 370, 120, 22, G4P.SCROLLBARS_NONE);
   AlphaBox.setText("0.5");
   AlphaBox.setOpaque(true);
   AlphaBox.addEventHandler(this, "AlphaChanged");
-  TrainButton = new GButton(Parameters_Window, 17, 439, 220, 40);
+  TrainButton = new GButton(Parameters_Window, 10, 440, 240, 40);
   TrainButton.setText("Train Network");
   TrainButton.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   TrainButton.addEventHandler(this, "TrainButtonClicked");
-  LoadButton = new GButton(Parameters_Window, 130, 30, 56, 25);
+  LoadButton = new GButton(Parameters_Window, 130, 30, 120, 25);
   LoadButton.setText("Load");
   LoadButton.setLocalColorScheme(GCScheme.ORANGE_SCHEME);
   LoadButton.addEventHandler(this, "LoadButtonClicked");
-  SaveButton = new GButton(Parameters_Window, 60, 30, 56, 22);
+  SaveButton = new GButton(Parameters_Window, 10, 30, 110, 22);
   SaveButton.setText("Save");
   SaveButton.setLocalColorScheme(GCScheme.GREEN_SCHEME);
   SaveButton.addEventHandler(this, "SaveButtonClicked");
@@ -194,17 +193,17 @@ public void createGUI(){
   label1.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   label1.setText("Save or Load Network");
   label1.setOpaque(false);
-  LayersLabel = new GLabel(Parameters_Window, 20, 90, 100, 20);
+  LayersLabel = new GLabel(Parameters_Window, 10, 90, 110, 20);
   LayersLabel.setText("Hidden Layers");
   LayersLabel.setOpaque(true);
-  NeuronsLabel = new GLabel(Parameters_Window, 20, 120, 100, 20);
+  NeuronsLabel = new GLabel(Parameters_Window, 10, 120, 110, 20);
   NeuronsLabel.setText("Neurons/Layer");
   NeuronsLabel.setOpaque(true);
-  LayersBox = new GTextField(Parameters_Window, 130, 90, 110, 22, G4P.SCROLLBARS_NONE);
+  LayersBox = new GTextField(Parameters_Window, 130, 90, 120, 22, G4P.SCROLLBARS_NONE);
   LayersBox.setText("4");
   LayersBox.setOpaque(true);
   LayersBox.addEventHandler(this, "LayersBoxChanged");
-  NeuronsBox = new GTextField(Parameters_Window, 130, 120, 110, 21, G4P.SCROLLBARS_NONE);
+  NeuronsBox = new GTextField(Parameters_Window, 130, 120, 120, 21, G4P.SCROLLBARS_NONE);
   NeuronsBox.setText("14");
   NeuronsBox.setOpaque(true);
   NeuronsBox.addEventHandler(this, "NeuronsBoxChanged");
@@ -213,7 +212,7 @@ public void createGUI(){
   GenerateLabel.setText("Network Parameters");
   GenerateLabel.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   GenerateLabel.setOpaque(false);
-  TrainingDatasetButton = new GButton(Parameters_Window, 50, 400, 160, 30);
+  TrainingDatasetButton = new GButton(Parameters_Window, 30, 400, 200, 30);
   TrainingDatasetButton.setText("Load Training Dataset");
   TrainingDatasetButton.setLocalColorScheme(GCScheme.RED_SCHEME);
   TrainingDatasetButton.addEventHandler(this, "TraningDatasetButtonClicked");

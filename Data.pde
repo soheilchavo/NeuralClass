@@ -35,6 +35,9 @@ void select_training_dataset(){
 
 void training_dataset_selected(File selection){
   
+  if(selection == null)
+    return;
+  
   println("Loading Dataset: " + selection.getName());
   
   try{
@@ -77,6 +80,10 @@ void select_testing_dataset(){
 }
 
 void testing_dataset_selected(File selection){
+  
+  if(selection == null)
+    return;
+  
   try{
     testing_data = new ArrayList<Sample>();
     for(File f: selection.listFiles()){
@@ -93,5 +100,7 @@ void select_output_folder(){
 }
 
 void output_folder_selected(File selection){
+  if(selection == null)
+    return;
   output_path = selection.getPath();
 }

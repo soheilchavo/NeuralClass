@@ -25,6 +25,10 @@ String formatted_list(String[] list){
 
 //Makes a .nnf file (Neural Network File, I made it up) and stores network and parameters inside
 void networkOutputSelected(File selection) {
+  
+  if(selection == null)
+    return;
+  
   String ext = ".nnf";
   if (selection.getName().contains(".nnf")) {
     ext = "";
@@ -115,6 +119,9 @@ void networkOutputSelected(File selection) {
 
 void networkSelected(File selection) {
 
+  if(selection == null)
+    return;
+  
   println("Loading " + selection.getName());
 
   try {

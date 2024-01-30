@@ -3,11 +3,11 @@
 
 //Instructions for use:
 //
-//1. Load a network from the "models" folder, or generate one
+//1. Load a network from the "models" folder, or create one yourself and train it with the proper database
 //
-//2. Load the equivilent data from the "data" folder
+//2. Load the models respective data from the "data" folder either with a single sample or a folder
 //
-//3. Press "Feedforward" and see the generated guess
+//3. Press "Feedforward" and see the list of network guess (Sorted by confidence in answer)
 
 import g4p_controls.*;
 
@@ -20,7 +20,7 @@ int output_size = 2; //Number of classifications of data
 
 //Network Hyperparameters
 int epochs = 2; //Number of cycles ran on the training data
-int batch_size = 25; //Batch size for training with stochastic gradient descent
+int batch_size = 8; //Batch size for training with stochastic gradient descent
 float alpha = 0.4; //Learning step taken in backpropogation
 boolean randomize_weight_and_bias = true; //Randomizes w/b on network initialization
 boolean training = false; //If the program is currently training the network
@@ -55,7 +55,7 @@ color activation_text_colour = color(0, 0, 0);
 Network network = null; //Main Network for the program
 String[] output_classes = new String[] { "Toopy", "Binoo" };
 float[] network_output;
-int network_guess;
+int[] network_guesses = new int[3];
 
 boolean draw_network_backprop = true;
 
@@ -206,7 +206,4 @@ void update_gui_values(){
   catch(Exception e){}
   
   DataLabel.setText(data_text);
-  
-  if(network != null)
-    NetworkOutputLabel.setText(get_network_outputs());
 }

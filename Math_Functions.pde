@@ -106,3 +106,11 @@ float multiply_arraylist_items(ArrayList<Float> arr){
   }
   return product;
 }
+
+float array_sum(float[] a){
+  float sum = 0;
+  for(float b: a){
+    sum += b;
+  }
+  return sum;
+}
