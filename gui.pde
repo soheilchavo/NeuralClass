@@ -27,7 +27,7 @@ public void ActivationListChanged(GDropList source, GEvent event) { //_CODE_:Act
 } //_CODE_:ActivationList:754752:
 
 public void LossFunctionListChanged(GDropList source, GEvent event) { //_CODE_:LossFunctionList:713425:
-  loss = index_in_arr(loss_list, ActivationList.getSelectedText());
+  loss = index_in_arr(loss_list, LossFunctionList.getSelectedText());
 } //_CODE_:LossFunctionList:713425:
 
 public void BatchSizeChanged(GTextField source, GEvent event) { //_CODE_:BatchSizeField:735693:
@@ -81,6 +81,10 @@ public void TraningDatasetButtonClicked(GButton source, GEvent event) { //_CODE_
   update_gui_values();
 } //_CODE_:TrainingDatasetButton:551031:
 
+public void BWCheckboxClicked(GCheckbox source, GEvent event) { //_CODE_:BWCheckbox:955981:
+  black_and_white = BWCheckbox.isSelected();
+} //_CODE_:BWCheckbox:955981:
+
 synchronized public void win_draw2(PApplet appc, GWinData data) { //_CODE_:Network_Output:364765:
   appc.background(230);
 } //_CODE_:Network_Output:364765:
@@ -109,7 +113,19 @@ public void DataSelectClicked(GButton source, GEvent event) { //_CODE_:DataSelec
 } //_CODE_:DataSelectButton:869626:
 
 public void FeedForwardButtonClicked(GButton source, GEvent event) { //_CODE_:FeedForwardButton:837957:
-  feed_forward_sample();
+  
+  if(output_mode == "Sample"){
+    if(curr_sample == null)
+      println("Sample Not Loaded.");
+    else
+      feed_forward_sample();
+  }
+  else{
+    if(testing_data == null)
+      println("Data Not Loaded.");
+    else
+      feed_forward_set();
+  }
 } //_CODE_:FeedForwardButton:837957:
 
 public void OutputDirectoryButtonClicked(GButton source, GEvent event) { //_CODE_:OutputDirectoryButton:259796:
@@ -125,7 +141,7 @@ public void createGUI(){
   G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
   G4P.setMouseOverEnabled(false);
   surface.setTitle("NeuralClass");
-  Parameters_Window = GWindow.getWindow(this, "Parameters", 244, 150, 260, 500, JAVA2D);
+  Parameters_Window = GWindow.getWindow(this, "Parameters", 244, 150, 260, 530, JAVA2D);
   Parameters_Window.noLoop();
   Parameters_Window.setActionOnClose(G4P.KEEP_OPEN);
   Parameters_Window.addDrawHandler(this, "win_draw1");
@@ -161,9 +177,9 @@ public void createGUI(){
   BatchSizeField.setText("5");
   BatchSizeField.setOpaque(true);
   BatchSizeField.addEventHandler(this, "BatchSizeChanged");
-  RandomizeBox = new GCheckbox(Parameters_Window, 70, 150, 117, 20);
+  RandomizeBox = new GCheckbox(Parameters_Window, 50, 150, 170, 20);
   RandomizeBox.setIconPos(GAlign.EAST);
-  RandomizeBox.setText("Randomize W/B");
+  RandomizeBox.setText("Random Weight & Biases");
   RandomizeBox.setOpaque(false);
   RandomizeBox.addEventHandler(this, "RandomizeChanged");
   RandomizeBox.setSelected(true);
@@ -174,7 +190,7 @@ public void createGUI(){
   AlphaBox.setText("0.5");
   AlphaBox.setOpaque(true);
   AlphaBox.addEventHandler(this, "AlphaChanged");
-  TrainButton = new GButton(Parameters_Window, 10, 440, 240, 40);
+  TrainButton = new GButton(Parameters_Window, 10, 480, 240, 40);
   TrainButton.setText("Train Network");
   TrainButton.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   TrainButton.addEventHandler(this, "TrainButtonClicked");
@@ -212,10 +228,17 @@ public void createGUI(){
   GenerateLabel.setText("Network Parameters");
   GenerateLabel.setLocalColorScheme(GCScheme.CYAN_SCHEME);
   GenerateLabel.setOpaque(false);
-  TrainingDatasetButton = new GButton(Parameters_Window, 30, 400, 200, 30);
+  TrainingDatasetButton = new GButton(Parameters_Window, 30, 440, 200, 30);
   TrainingDatasetButton.setText("Load Training Dataset");
   TrainingDatasetButton.setLocalColorScheme(GCScheme.RED_SCHEME);
   TrainingDatasetButton.addEventHandler(this, "TraningDatasetButtonClicked");
+  BWCheckbox = new GCheckbox(Parameters_Window, 30, 410, 200, 20);
+  BWCheckbox.setIconPos(GAlign.EAST);
+  BWCheckbox.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
+  BWCheckbox.setText("Dataset is in Black and White");
+  BWCheckbox.setOpaque(false);
+  BWCheckbox.addEventHandler(this, "BWCheckboxClicked");
+  BWCheckbox.setSelected(true);
   Network_Output = GWindow.getWindow(this, "NetworkOutput", 400, 250, 300, 400, JAVA2D);
   Network_Output.noLoop();
   Network_Output.setActionOnClose(G4P.KEEP_OPEN);
@@ -287,6 +310,7 @@ GTextField LayersBox;
 GTextField NeuronsBox; 
 GLabel GenerateLabel; 
 GButton TrainingDatasetButton; 
+GCheckbox BWCheckbox; 
 GWindow Network_Output;
 GLabel OutputLabel; 
 GButton SelectSample; 

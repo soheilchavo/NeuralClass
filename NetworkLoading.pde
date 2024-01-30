@@ -11,24 +11,22 @@ void load_network() {
   selectInput("Select Network to load.", "networkSelected", new File(sketchPath() + "/models"));
 }
 
+//Turns String[] into a formatted string, [1,2,3] --> "1,2,3"
 String formatted_list(String[] list){
-  
   String out = list[0];
-  
   for(int i = 1; i < list.length; i++){
     out += ", " + list[i];
   }
-  
   return out;
-  
 }
 
-//Makes a .nnf file (Neural Network File, I made it up) and stores network and parameters inside
+//Makes a .nnf file (Neural Network File) and stores network and parameters inside
 void networkOutputSelected(File selection) {
   
   if(selection == null)
     return;
   
+  //Don't add .nnf if it already exists
   String ext = ".nnf";
   if (selection.getName().contains(".nnf")) {
     ext = "";
@@ -50,6 +48,7 @@ void networkOutputSelected(File selection) {
     output.println("Cost=" + loss);
     output.println("Randomized=" + randomize_weight_and_bias);
     output.println("OutputClasses=" + formatted_list(output_classes));
+    output.println("Black&WhiteInput=" + black_and_white);
 
     output.println("#Data"); //Write all neurons and connections to the file
 
@@ -130,12 +129,14 @@ void networkSelected(File selection) {
 
     String current_tag = ""; //Tag we're reading for
 
+    //Variables for configuring layers, neurons, and connections
     int curr_layer = -1;
     int curr_neuron = 0;
     int curr_connection = 0;
 
     boolean searching_for_neurons = false;
 
+    //Anti-corruption I/O arrays
     float[] input_test = new float[0];
     float[] output_test = new float[0];
 
@@ -149,6 +150,7 @@ void networkSelected(File selection) {
       } 
       else if (text_line.substring(0, 1) != "//") { //Don't read line if it's a comment
 
+        //Load all Metadata
         if (current_tag.contains("#Metadata")) {
 
           int equals_index = text_line.indexOf("=")+1;
@@ -187,6 +189,9 @@ void networkSelected(File selection) {
             
           else if(param.contains("OutputClasses"))
             output_classes = val.split(",");
+            
+          else if(param.contains("Black&WhiteInput"))
+            black_and_white = boolean(val);
             
         } 
         else if (current_tag.contains("#Data")) {
@@ -239,17 +244,16 @@ void networkSelected(File selection) {
           }
         }
 
+        //Runs corruption test to ensure network wasn't loaded improperly
         if (current_tag.contains("#CorruptionTest")) {
 
           if (text_line.contains("Input")) {
             input_test = new float[input_size];
             String[] period_split = text_line.substring(text_line.indexOf("=")+1).split(",");
-              
             for (int i = 0; i < input_size; i++)
               input_test[i] = float(period_split[i]);
-              
-              
           } 
+          
           else if (text_line.contains("Output")) {
             String[] period_split = text_line.substring(text_line.indexOf("=")+1).split(",");
             output_test = new float[output_size];
@@ -280,5 +284,6 @@ void networkSelected(File selection) {
   catch(Exception e) {
     println("Error loading the network, " + e);
   }
+  
   update_gui_values();
 }

@@ -31,11 +31,60 @@ int index_in_arr(String[] arr, String item) {
   return 0;
 }
 
+//Feedforwards a single data point to the network
 void feed_forward_sample() {
   training = false;
+  delay(500);
   feed_forward(curr_sample.get_pixel_data());
   update_gui_values();
   NetworkOutputLabel.setText(get_network_outputs());
+}
+
+//Feedforwards a set of data to the network
+void feed_forward_set(){
+  
+  training = false;
+  delay(500);
+  println("Testing Started.");
+  
+  try{
+    
+    int dataset_size = testing_data.size();
+    int n_correct = 0;
+    int n_incorrect = 0;
+    
+    PrintWriter output = createWriter(output_path + dataset_name + ".txt");
+
+    for (int i = 0; i < dataset_size; i++) {
+      
+      //Feedforward the data point
+      feed_forward(testing_data.get(i).get_pixel_data());
+      
+      //Print guess and correct answer
+      output.println("Sample: " + i + "/" + dataset_size + ", Guess: " + output_classes[network_guesses[0]] + ", Actual: " + testing_data.get(i).type);
+    
+      //Check if it was correct or not
+      if(output_classes[network_guesses[0]].equals(testing_data.get(i).type))
+        n_correct += 1;
+      else
+        n_incorrect += 1;
+    }
+    
+    //Network accuracy
+    String ratio = float_as_truncated_str(100*n_correct/dataset_size, 4);
+    
+    output.println("Number of correct guesses: " + n_correct);
+    output.println("Number of incorrect guesses: " + n_incorrect);
+    output.println("Network accuracy: " + ratio + "%");
+    
+    output.flush();
+    output.close();
+    
+    println("Testing successful, results available in: " + output_path + dataset_name + ".txt");
+  }
+  
+  catch(Exception e) { println("Error testing dataset," + e); }
+  
 }
 
 //Feeds a set of data through the network and returns results
@@ -110,7 +159,11 @@ void backprop(String correct_class) {
 void train() {
 
   training = true;
+  
+  //The batch we're currently on
   int batch = 0;
+  
+  //How many batches there are
   int n_batches = int(training_data.size()/batch_size);
 
   for (int e = 1; e < epochs+1; e++) {
@@ -120,13 +173,18 @@ void train() {
     if (training == false)
       break;
 
+    //Shuffle training data to prevent overfitting
     training_data = shuffle_data(training_data);
 
     for (int i = 0; i < training_data.size(); i++) {
       
+      //Feed data to network
       feed_forward(training_data.get(i).get_pixel_data());
+      
+      //Network learns from mistakes
       backprop(training_data.get(i).type);
       
+      //Update the network if we've gone through the batch
       if (int(i+1) % batch_size == 0){
         batch += 1;
         println("Epoch: " + e + ", Batch: " + batch + "/" + n_batches);
@@ -138,6 +196,7 @@ void train() {
 
     }
     
+    //Make any last changes (If data size didn't fit nicely into batch size
     network.update_network();
     
     println("Epoch: " + e + " Complete.");
@@ -153,6 +212,7 @@ void train() {
   }
 }
 
+//Turns float into string and cuts it off at some point
 String float_as_truncated_str(float a, int b){
   return str(a).substring(0, min(b, str(a).length()));
 }
@@ -175,19 +235,23 @@ void print_network_dels(int layer) {
   }
 }
 
+//Gets the top 3 network outputs to display on gui
 String get_network_outputs(){
   
   try{
     
     String out = "";
     
+    //Go through top 3 guesses and store their activations in the activation list
     float[] activation_list = new float[network_guesses.length];
     for(int i = 0; i < network_guesses.length; i++){
       activation_list[i] = network_output[network_guesses[i]];
     }
     
+    //Take the sum of those activations
     float sum = array_sum(activation_list);
     
+    //Find out the ratio of each guess to the sum
     for(int i = 0; i < 3; i++){
       out += output_classes[network_guesses[i]] + "  -   " + float_as_truncated_str(100*activation_list[i]/sum, 4) + "% Confidence\n";
     }

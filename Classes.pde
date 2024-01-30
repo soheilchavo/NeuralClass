@@ -1,4 +1,4 @@
-int global_serial = 0;
+int global_serial = 0; //Serial number for neurons, each one has their own unique number which this variable keeps track of
 
 class Neuron {
 
@@ -22,7 +22,10 @@ class Neuron {
   float y;
   
   Neuron(){
-    this.bias = random(-1, 1);
+    this.bias = 0.5;
+    if(randomize_weight_and_bias)
+      this.bias = random(-1, 1);
+    
     this.activation = random(1);
     this.z_val = 0;
     this.del_bias = new ArrayList<Float>();
@@ -31,19 +34,19 @@ class Neuron {
     this.activation_sum = 0;
     this.connections = new ArrayList<Connection>();
     this.connections_forward = new ArrayList<Connection>();
+    
     global_serial += 1;
     this.serial = global_serial;
   }
   
+  //Updates neuron in gradient descent
   void update_neuron(){
     for(float d: this.del_bias)
       this.bias -= (alpha/batch_size)*d;
-    
     this.del_bias = new ArrayList<Float>();
   }
   
   void calculate_activation(){
-    //println(this.activation_sum, this.bias);
     this.z_val = this.activation_sum+this.bias;
     this.activation = activation_function(this.z_val);
     this.activation_sum = 0;
@@ -70,11 +73,10 @@ class Connection{
     this.b = two;
   }
   
+  //Updates weight for gradient descent
   void update_connection(){
-    
     for(float d: this.del_weight)
       this.weight -= (alpha/batch_size)*d;
-    
     this.del_weight = new ArrayList<Float>();
   }
   
@@ -95,22 +97,27 @@ class Layer{
    
     //If this is not the first layer
     if(prev_layer != null){
+      
       //Create connections between each neuron in the last layer and in the current one
       this.connections = new Connection[n*prev_layer.neurons.length];
+      
       for(int n_0 = 0; n_0 < n; n_0++){
+        
         for(int n_1 = 0; n_1 < prev_layer.neurons.length; n_1++){
+          
           float weight = 0;
           if(randomize_weight_and_bias)
             weight = random(-1,1);
+          
           this.connections[n_0*prev_layer.neurons.length + n_1] = new Connection(prev_layer.neurons[n_1], this.neurons[n_0], weight);
           this.neurons[n_0].connections.add(this.connections[n_0*prev_layer.neurons.length + n_1]);
           prev_layer.neurons[n_1].connections_forward.add(this.connections[n_0*prev_layer.neurons.length + n_1]);
         }
       }
     }
-    
   }
   
+  //Updates layer for gradient descent
   void update_layer(){
     for(Connection c: connections){
       c.update_connection();
@@ -173,6 +180,7 @@ class Network{
     return null;
   }
   
+  //Gets all activations for a single layer
   float[] get_layer_activation(int i){
     float[] out = new float[this.layers[i].neurons.length];
     for(int x = 0; x < out.length; x++){

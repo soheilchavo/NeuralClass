@@ -5,9 +5,11 @@
 //
 //1. Load a network from the "models" folder, or create one yourself and train it with the proper database
 //
-//2. Load the models respective data from the "data" folder either with a single sample or a folder
+//2. For testing, choose "Sample" for one data point (.png), choose "Set" for a full folder of data
 //
-//3. Press "Feedforward" and see the list of network guess (Sorted by confidence in answer)
+//2. Load the models respective data from the "data" folder
+//
+//3. Press "Feedforward" and see the list of network's top 3 guesses
 
 import g4p_controls.*;
 
@@ -33,6 +35,7 @@ int loss = 0; //Cost function for backpropogation, index for the list above
 //Dataset variables
 ArrayList<Sample> training_data;
 ArrayList<Sample> testing_data;
+String dataset_name = "";
 String testing_data_path = "";
 
 Sample curr_sample;
@@ -64,8 +67,6 @@ void setup(){
   frameRate(18);
   noLoop();
   
-  //select_training_dataset();
-  
   createGUI();
   update_gui_values();
   generate_network();
@@ -74,18 +75,21 @@ void setup(){
 void draw(){
   background(background_col[0], background_col[1], background_col[2]); //Draw Background
   drawNeuralNetwork();
-  update_gui_values();
+  update_gui_values(); //Updates GUI values with program's values 
 }
 
 void drawNeuralNetwork(){
   
   //Draw some info text if network is too large to display
   if(max( input_size, hidden_layers, neurons_per_layer ) > 100){
+    
     draw_network_backprop = false;
     
     fill(255);
     textAlign(CENTER);
     textSize(17);
+    
+    //Base height for text
     float base_height = 220;
     
     text("Network is too large to display. (More than 100 layers or neurons)", width/2, base_height);
@@ -93,13 +97,12 @@ void drawNeuralNetwork(){
     text("Output Neurons: " + output_size, width/2, base_height + 48*2);
     text("N/layer: " + neurons_per_layer + ", Hidden layers: " + hidden_layers, width/2, base_height+ 48*3);
     
+    //Write Output Classes
     text("Classes:", width/2, base_height + 48*4);
-    
     String classes_string = output_classes[0];
     for(int i = 1; i < output_classes.length; i++){
       classes_string += ", " + output_classes[i];
     }
-    
     textSize(633/classes_string.length());
     text(classes_string, width/2, base_height + 48*5);
     
@@ -193,15 +196,19 @@ void update_gui_values(){
   LayersBox.setText(str(hidden_layers));
   NeuronsBox.setText(str(neurons_per_layer));
   
+  //Default data text
   String data_text = "Data Not Loaded";
   
+  //Try catch exists for some random cases
   try{
+    
     if(output_mode == "Sample" && curr_sample != null){
       data_text = curr_sample.image_file.getCanonicalPath();
       DataLabel.setIcon(curr_sample.image_file.getCanonicalPath(), 1);
     }
     else if(testing_data_path != "")
       data_text = testing_data_path;
+  
   }  
   catch(Exception e){}
   
