@@ -11,6 +11,9 @@
 //
 //3. Press "Feedforward" and see the list of network's top 3 guesses
 
+//P.S. The MNIST digit model is only 67% accurate, this is because it was only trained on one epoch and on 10,000 samples.
+//Feel free to train a more accurate one yourself
+
 import g4p_controls.*;
 
 //Network Parameters
